@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2> {{categoryName}} {{status}}</h2>
+<a href ="categories"> Go back to Category Page</a>
+<br>
+<a href="home.hjs"> Home </a>
+<br>
+
+<form action = 'editCategory' method = 'post' >
+    <!-- maybe make placeholder the old content -->
+    <input type="text" name="categoryName" placeholder="New Name of Category" required>
+    <br>
+    <textarea rows="5" cols="50" name="categoryDescription" placeholder="New Category Description" required></textarea>
+    <br>
+    <button type="submit" >Update Category</button>
+    <a href ="categories"> Cancel </a>
+</form>
+
+
+</body>
+
+</html>

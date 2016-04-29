@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+
+<p style="text-align: left"> Welcome {{ userName }}! </p>
+<br><br>
+<p style="text-align: center"> Home page </p>
+<br><br>
+<div>
+    <a href="categories" > Categories </a>
+    <br>
+    <a href="products" > Products </a>
+</div>
+
+</body>
+</html>

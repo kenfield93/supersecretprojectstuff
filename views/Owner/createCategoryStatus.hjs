@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2> {{categoryName}} {{status}}</h2>
+<a href ="categories"> Go back to Category Page</a>
+<br>
+<a href="home.hjs"> Home </a>
+
+
+</body>
+
+</html>

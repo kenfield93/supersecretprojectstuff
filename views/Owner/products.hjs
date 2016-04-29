@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div>
+    <h2>  {{status}} </h2>
+</div>
+<form action = 'createProduct' method = 'post' id="createForm">
+    <input type="text" name="productName" placeholder="Name of Product" required>
+    <br>
+    <input type="text" name="sku" placeholder="SKU" required>
+    <input type="number" name="listPrice" placeholder="price" required>
+    {{{categoryDropDown}}}
+    <br>
+    <button type="submit" >Add Product</button>
+</form>
+
+<div id='categoryDiv' >
+    {{{categoryList}}}
+</div>
+
+<div>
+    {{{productsDisplay }}}
+</div>
+
+</body>
+
+</html>
