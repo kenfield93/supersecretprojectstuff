@@ -42,9 +42,9 @@ exports.getCategories = function(){
 exports.createCategory = function(title, description, userID){
 
     var createCategory = function (){
-        sql = "INSERT INTO " + categoryTable +
+        sql = "BEGIN; INSERT INTO " + categoryTable +
                 " (name, description, creator) " +
-                " VALUES ('" + title + " ',' " + description + " ',' " + userID + " ')"
+                " VALUES ('" + title + " ',' " + description + " ',' " + userID + " '); COMMIT;"
         ;
 
         return query.query(sql, null, function(err, result){
@@ -58,8 +58,9 @@ exports.createCategory = function(title, description, userID){
 }
 
 exports.deleteCategory = function(categoryId){
-  var sql = "DELETE FROM " + categoryTable +
-          " AS c WHERE c.id = '" + categoryId + "'"
+
+  var sql = "BEGIN; DELETE FROM " + categoryTable +
+          " AS c WHERE c.id = '" + categoryId + "'; COMMIT;"
       ;
   return query.query(sql, null, function(err, result){
       if(err){
@@ -87,11 +88,30 @@ exports.hasSomeProducts = function( ){
     return dbPromise;
 };
 
+exports.hasNoProducts = function(catId){
+
+    var sql = "SELECT  p.category " +
+            " FROM  " + productTable + " p" +
+     " WHERE p.category = '" + catId + "' "
+        ;
+
+    var dbPromise = query.query(sql, null, function(err, result){
+        if(err){
+            return null;
+        }
+        if( result.rowCount == 0)
+           return true;
+        return false;
+    }) ;
+
+    return dbPromise;
+};
+
 exports.updateCategory = function( categoryId, title, description){
 
-    var sql = "UPDATE " + categoryTable +
+    var sql = " BEGIN; UPDATE " + categoryTable +
             " SET name = '" + title + "' , description = '" + description +
-            "' WHERE id=" + categoryId
+            "' WHERE id='" + categoryId + "'; COMMIT;"
     ;
 
     var dbPromise = query.query(sql, null, function(err, result){

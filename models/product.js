@@ -6,8 +6,8 @@ var productTable = "product_items";
 
 exports.createProduct = function (cateogryId, productName, sku, price){
 
-     var sql = "INSERT INTO " + productTable + " (category, name, sku, price) VALUES " +
-             " ( '" + cateogryId + "', '" + productName + "', '" + sku + "', '" + price + "') "
+     var sql = "BEGIN; INSERT INTO " + productTable + " (category, name, sku, price) VALUES " +
+             " ( '" + cateogryId + "', '" + productName + "', '" + sku + "', '" + price + "'); COMMIT; "
     ;
 
     var dbPromise = query.query(sql, null, function(err, result){
@@ -39,8 +39,8 @@ exports.getProductsByCategory = function(categoryId){
 };
 
 exports.deleteProduct = function(productId){
-    var sql = "DELETE FROM " + productTable +
-            " AS p WHERE p.id = '" + productId + "'"
+    var sql = "BEGIN; DELETE FROM " + productTable +
+            " AS p WHERE p.id = '" + productId + "'; COMMIT;"
     ;
     return query.query(sql, null, function(err, result){
           if(err){
@@ -52,9 +52,9 @@ exports.deleteProduct = function(productId){
 
 exports.editProduct = function(productId, name, sku, price, category){
 
-        var sql = "UPDATE " + productTable +
-                " SET name = '" + name + "' , sku = '" + sku + "' , price = '" + price + "' , category ='" + category + "'";
-                "' WHERE id=" + productId
+        var sql = "BEGIN; UPDATE " + productTable +
+                " SET name = '" + name + "' , sku = '" + sku + "' , price = '" + price + "' , category ='" + category + "'" +
+                " WHERE id='" + productId + "'; COMMIT;"
             ;
 
         var dbPromise = query.query(sql, null, function(err, result){

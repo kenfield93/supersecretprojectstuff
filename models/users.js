@@ -36,7 +36,6 @@ exports.createUser = function(userName, age, isOwner, state){
         // returns promise
         return query.query(sql, null, function (err, result) {
             if (err) {
-                console.log("fuck meh");
                return null;
             }
             return true;
@@ -63,8 +62,7 @@ exports.getSigninInfo = function(userName){
         }
         // user has account
         if(result.rowCount != 0){
-            console.log("id = " + result.rows[0].id);
-            console.log("isOwner = " + result.rows[0].owner);
+
 
             return { id : result.rows[0].id, isOwner: result.rows[0].owner};
         }

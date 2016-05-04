@@ -17,7 +17,6 @@ exports.post = function(req, res, next){
    var description = req.body.categoryDescription;
    var userID = req.session.userId;
 
-    console.log("titty " + userName);
    var status = categoryModel.createCategory(name, description, userID);
 
    //TODO: call catch function or put second func for reject. Do this everywhere status.then is called
@@ -26,11 +25,9 @@ exports.post = function(req, res, next){
             res.render('Owner/createCategoryStatus', {userName: userName, categoryName: name, status: " Category was successfuly created"});
          }
          else {
-             console.log("nonope " + outcome);
             res.render('Owner/createCategoryStatus', {userName: userName, categoryName: name, status: " Category creation failed"});
          }
       }, function (outcome) {
-            console.log("yesyeah " + outcome);
             res.render('Owner/createCategoryStatus', {userName: userName, categoryName: name, status: " Category creation failed"} );
        }
    );

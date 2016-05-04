@@ -38,7 +38,6 @@ exports.get = function(req, res, next){
     }
 
     else {
-        console.log("ooh la la");
         renderProductPage(res, productCreationStatus, productsDisplay, userName);
 
     }
@@ -106,29 +105,12 @@ function getProductsByCategory(categoryId){
           productList = createURL(outcome);
           return productList;
     }, function(outcome){
-            console.log("oh no");
             return outcome;
         }
     );
 
 }
 
-/*
-var createURL = function(result){
-    var html ="<ul> ";
-
-    for(i = 0; i < result.length; i++){
-        html += " <li> ";
-        //TODO:
-        var dirtyURL = "products?productId=" + encodeURIComponent(result[i].id);
-        var productName = result[i].name;
-        html += "<a href='" + dirtyURL + "' > " + productName + " </a>";
-        html += " </li> ";
-    }
-    html += " </ul>";
-    return html;
-};
-*/
 
 var createURL = function(result){
     var html = "<ul>";

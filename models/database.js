@@ -73,11 +73,9 @@ module.exports = {
                         outcome = cb(err, result);
                         //console.log("Session: %j", outcome);
                         if( outcome == false || outcome == null) {
-                            console.log("jaja false/null");
                             reject(err);
                         }
                         else {
-                            console.log("jaja true ");
                             resolve(outcome);
                         }
                     })
