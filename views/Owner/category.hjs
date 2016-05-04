@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html>
  <body>
+ <p> Welcome {{ userName }}! </p>
+ <a href="home"> Home </a>
+ <br>
+ <a href="products" > Products </a>
+ <br>
+ <a href="productBrowsing" > Browse Products </a>
+ <br>
+
     <form action = 'createCategory' method = 'post' id="createForm">
          <input type="text" name="categoryName" placeholder="Name of Category" required>
          <br>

@@ -2,8 +2,10 @@
  * Created by kyle on 4/24/16.
  */
 var categoryModel = require("../models/category");
+var general = require("../models/general");
 
 exports.post = function(req, res, next){
+    general.noLoggedInRedirect(req.session.loggedIn, res);
 
     var categoryId = req.session.categoryId,
         title = req.body.categoryName,
@@ -13,10 +15,10 @@ exports.post = function(req, res, next){
 
    status.then(function(err, result)
             {
-                res.render('Owner/createCategoryStatus', { status: " Category was successfuly updated"});
+                res.render('Owner/createCategoryStatus', {userName: req.session.name, status: " Category was successfuly updated"});
             },function(err, result){
        // can use err to specify what the error was
-                res.render('Owner/createCategoryStatus', { status: " Category failed to update"});
+                res.render('Owner/createCategoryStatus', {userName: req.session.name, status: " Category failed to update"});
             }
 
    );

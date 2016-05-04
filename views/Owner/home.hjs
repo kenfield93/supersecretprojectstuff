@@ -13,6 +13,8 @@
     <a href="categories" > Categories </a>
     <br>
     <a href="products" > Products </a>
+    <br>
+    <a href="productBrowsing" > Browse Products </a>
 </div>
 
 </body>

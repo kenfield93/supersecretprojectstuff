@@ -3,9 +3,12 @@
  */
 
 var productModel = require("../models/product");
+var general = require("../models/general");
 
 exports.post = function(req, res, next){
-    // console.log("req data = %j", req.body);
+    general.noLoggedInRedirect(req.session.loggedIn, res);
+
+
     var name = req.body.productName;
     name = name.trim();
     var sku = req.body.sku;

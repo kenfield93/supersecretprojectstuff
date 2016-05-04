@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
 <body>
-
+<p> Welcome {{ userName }}! </p>
+<br>
 <h2> {{categoryName}} {{status}}</h2>
 <a href ="categories"> Go back to Category Page</a>
 <br>
-<a href="home.hjs"> Home </a>
+<a href="home"> Home </a>
 <br>
 
 <form action = 'editCategory' method = 'post' >

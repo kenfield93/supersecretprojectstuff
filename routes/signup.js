@@ -9,7 +9,7 @@ exports.post = function(req, res, next){
      // name = name.trim().toLowerCase();
       var age = req.body.age;
       var state = req.body.state;
-      var isOwner =  req.body.state == "owner";
+      var isOwner =  req.body.role == "owner";
 
       req.session.name = name;
       var status = userModel.createUser(name, age, isOwner, state);

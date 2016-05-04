@@ -29,7 +29,7 @@ var categories = 'CREATE TABLE categories(id SERIAL PRIMARY KEY,' +
 var product_items = 'CREATE TABLE product_items( id SERIAL PRIMARY KEY,' +
                                               'category INTEGER not null REFERENCES categories(id), ' +
                                               'name TEXT not null CHECK(length(name) > 0),' +
-                                              'sku TEXT not null unique CHECK(length(sku) > 0),' +
+                                              'sku TEXT unique not null CHECK(length(sku) > 0),' +
                                               'price INTEGER not null CHECK(price > 0),' +
                                                 'UNIQUE(name, category) )'
                    ;

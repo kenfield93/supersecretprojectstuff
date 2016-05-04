@@ -19,9 +19,14 @@ exports.post = function(req, res, next) {
         else {
             //note session.id is usued internally to identify sessions
             req.session.userId = value["id"];
-            console.log("soon i'll be 60 years old " + req.session.userId);
             req.session.isOwner = value["isOwner"];
-            res.render('Owner/home', {userName: userName});
+            req.session.loggedIn = true;
+            req.session.name = userName;
+            if( value["isOwner"] )
+                res.render('Owner/home', {userName: userName});
+            else
+                res.render('Customer/home', {userName: userName});
+
         }
     });
 

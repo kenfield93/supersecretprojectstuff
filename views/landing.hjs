@@ -9,7 +9,7 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
 <body>
-<h1>Welcome to ma Website</h1>
+<h1>Welcome to CSE 135 Project 1</h1>
 <p>Please create an account or login to proceed</p>
 <br>
 
@@ -91,8 +91,9 @@
         </div>
     </form>
 </div>
-
+<br> <br>
 <div>
+    <p> Sign in</p>
     <form  action= "signin" method="post" >
         <div>
             <input type="text" name="userName"  placeholder="User name" required>

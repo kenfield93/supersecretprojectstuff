@@ -70,25 +70,22 @@ exports.deleteCategory = function(categoryId){
 
 };
 
-exports.hasNoProducts = function( categoryId){
+exports.hasSomeProducts = function( ){
 
-    var sql = "SELECT  p.id " +
-            " FROM  " + productTable + " p" +
-            " WHERE p.category = '" + categoryId + "' "
+    var sql = "SELECT  p.category " +
+            " FROM  " + productTable + " p"
+           // " WHERE p.category = '" + categoryId + "' "
     ;
 
     var dbPromise = query.query(sql, null, function(err, result){
         if(err){
             return null;
         }
-        if( result.rowCount != 0){
-            return false;
-        }
-        return true;
+        return result.rows;
     }) ;
 
     return dbPromise;
-}
+};
 
 exports.updateCategory = function( categoryId, title, description){
 

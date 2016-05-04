@@ -2,28 +2,28 @@
  * Created by kyle on 4/17/16.
  */
 var categoryModel = require("../models/category");
+var general  = require("../models/general");
 
 exports.post = function(req, res, next){
-
-    console.log("juicer %j", req.body);
-
+    general.noLoggedInRedirect(req.session.loggedIn, res);
 
     if( req.body.deleteButton == undefined){
-        req.session.categoryId = req.body.editButton;
-        console.log("ds3 " + req.body.editButton);
-        res.render('Owner/editCategory', {status: " edit Category"});
+        console.log("asdf" + req.body.updateButton);
+        req.session.categoryId = req.body.updateButton;
+        res.render('Owner/editCategory', {userName: req.session.name, status: " edit Category"});
     }
     else{
+        console.log("ghjk" + req.body.deleteButton);
         var dbPromise = deleteCategory(req.body.deleteButton);
         // if category has some promise
 
         dbPromise.then(function (outcome) {
                 if( outcome == false)
-                    res.render('Owner/createCategoryStatus', {status: " Category is not empty. Deletion failed"} );
+                    res.render('Owner/createCategoryStatus', {userName: req.session.name, status: " Category is not empty. Deletion failed"} );
                 else
-                    res.render('Owner/createCategoryStatus', { status: " Category was successfuly deleted"});
+                    res.render('Owner/createCategoryStatus', {userName: req.session.name,  status: " Category was successfuly deleted"});
             },function(outcome){
-                res.render('Owner/createCategoryStatus', { status: " Category failed to delete"});
+                res.render('Owner/createCategoryStatus', { userName: req.session.name, status: " Category failed to delete"});
             }
 
         );

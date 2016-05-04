@@ -1,21 +1,30 @@
 /**
  * Created by kyle on 4/17/16.
  */
-var category = require("../models/category.js");
+var category = require("../models/category");
+var general  = require("../models/general");
 
 exports.get = function (req, res, next){
-    var status = category.getCategories();
+    general.noLoggedInRedirect( req.session.loggedIn, res);
 
+    var products = category.hasSomeProducts();
+    var status = category.getCategories();
     status.then(function(outcome){
         if(outcome){
+            products.then(function(categoriesWithAtLeastOneProduct) {
+                var categoryList = createList(outcome, req.session.userId , categoriesWithAtLeastOneProduct);
 
-         var categoryList = createList(outcome, req.session.userId);
+                res.render("Owner/category", {userName: req.session.name, categoryList: categoryList});
+            }, function(err){
+                var categoryList = createList(outcome, req.session.userId);
 
-         res.render("Owner/category", {categoryList : categoryList});
+                res.render("Owner/category", {userName: req.session.name, categoryList: categoryList});
+            });
+
         }
         // no categories, so just display the page w/o making a list of them
         else{
-              res.render("Owner/category");
+              res.render("Owner/category", {userName : req.session.name});
         }
     });
 
@@ -27,11 +36,18 @@ exports.get = function (req, res, next){
  * Side effects: none
  * Note: this is only called for categories that the user created
  */
-function getButtonHTML(categoryID){
-    var buttons = "<form action='updateCategory' method='post'>" +
+function getButtonHTML(categoryID, nonEmptyCats){
+
+    for(j = 0; j < nonEmptyCats.length; j++){
+        if( categoryID == nonEmptyCats[j].category) {
+            return "<form action='updateCategory' method='post'>" +
+                " <button type='submit' name = 'updateButton' value= '" + categoryID + "' >Update</button>";
+        }
+    }
+
+    return "<form action='updateCategory' method='post'>" +
         "<button type='submit' name = 'deleteButton' value= '" + categoryID +"' >Delete</button>  <button type='submit' name = 'updateButton' value= '" + categoryID +"' >Update</button>";
 
-    return buttons;
 }
 
 /*
@@ -41,7 +57,7 @@ function getButtonHTML(categoryID){
  *         displays the update and delete buttons
  * Side effects: none
  */
-function createList(categoryList, ownerID){
+function createList(categoryList, ownerID, nonEmptyCats){
 
     var html = "<ul> ";
     for(i = 0; i < categoryList.length; i++){
@@ -53,19 +69,16 @@ function createList(categoryList, ownerID){
                 html += "<textarea rows='5', cols='50'>";
                     html += categoryList[i].description;
                 html += "</textarea>";
-
-        // creator is who ever created the category. ownerID is current owner who is viewing the page
+                // creator is who ever created the category. ownerID is current owner who is viewing the page
                 if(categoryList[i].creator == ownerID) {
-                    html += "<br>" + getButtonHTML(categoryList[i].id);
+                    html += "<br>" + getButtonHTML(categoryList[i].id, nonEmptyCats);
                 }
-        html += "</form>"
+             html += "</form>";
         html += " </li> <br>";
 
-        console.log("creator value = " + categoryList[i].creator + " ownerID = " + ownerID);
 
         html += "<br><br>";
     }
-
     html += " </ul>";
     return html;
 }
