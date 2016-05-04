@@ -8,6 +8,11 @@
  <br>
  <a href="productBrowsing" > Browse Products </a>
  <br>
+ <a href="productOrder"> Product Order</a>
+ <br>
+ <a href="checkOut">Check Out</a>
+ <br>
+
 
     <form action = 'createCategory' method = 'post' id="createForm">
          <input type="text" name="categoryName" placeholder="Name of Category" required>

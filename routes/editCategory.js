@@ -6,7 +6,7 @@ var general = require("../models/general");
 
 exports.post = function(req, res, next){
     general.noLoggedInRedirect(req.session.loggedIn, res);
-
+    general.clearProductPageSession(req.session);
     var categoryId = req.session.categoryId,
         title = req.body.categoryName,
         description = req.body.categoryDescription;

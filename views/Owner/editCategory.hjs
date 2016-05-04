@@ -8,6 +8,15 @@
 <br>
 <a href="home"> Home </a>
 <br>
+<a href="products" > Products </a>
+<br>
+<a href="productBrowsing" > Browse Products </a>
+<br>
+<a href="productOrder"> Product Order</a>
+<br>
+<a href="checkOut">Check Out</a>
+<br>
+
 
 <form action = 'editCategory' method = 'post' >
     <!-- maybe make placeholder the old content -->

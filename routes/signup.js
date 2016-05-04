@@ -13,6 +13,6 @@ exports.post = function(req, res, next){
 
       req.session.name = name;
       var status = userModel.createUser(name, age, isOwner, state);
-      status.then( function(outcome){ if( outcome === true) res.render('index', {userName : name}); else res.render('error', {userName : name});} );
+      status.then( function(outcome){ if( outcome === true) res.render('index', {userName : name}); else res.render('accountError', {userName : name});} );
 
 }

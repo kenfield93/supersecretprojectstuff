@@ -2,10 +2,25 @@
 <html>
 <body>
 <p> Welcome {{ userName }}! </p>
-<a href="home">Home</a>
 <div>
     <h2>  {{status}} </h2>
 </div>
+<div>
+<a href="home"> Home </a>
+<br>
+<a href="categories" > Categories </a>
+<br>
+<a href="products" > Products </a>
+<br>
+<a href="productBrowsing" > Browse Products </a>
+<br>
+<a href="productOrder"> Product Order</a>
+<br>
+<a href="checkOut">Check Out</a>
+<br>
+<br>
+</div>
+
 <form action = 'createProduct' method = 'post' id="createForm">
     <input type="text" name="productName" placeholder="Name of Product" required>
     <br>

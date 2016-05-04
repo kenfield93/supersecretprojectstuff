@@ -17,11 +17,11 @@ exports.post = function(req, res, next){
     var userID = req.session.userId;
 
     var status = productModel.createProduct(categoryId, name, sku, listPrice);
-
+    req.session.redirectProduct = true;
 
     status.then( function(outcome){
             req.session.status = "Product created Successfully";
-            res.redirect('products');
+            res.redirect('searchProduct');
         }, function(outcome){
            req.session.status = "Product failed to be created";
            res.redirect('products');

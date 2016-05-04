@@ -25,6 +25,8 @@ exports.getProductsByCategory = function(categoryId){
               "FROM " + productTable + " p " +
               "WHERE category= '" + categoryId + "' "
     ;
+    if( categoryId < 0)
+       sql = "SELECT * " + " FROM " + productTable + " p " ;
 
     var dbPromise = query.query(sql, null, function(err, result){
           if(err)
@@ -64,13 +66,16 @@ exports.editProduct = function(productId, name, sku, price, category){
 
         return dbPromise;
 
-}
+};
+
 
 exports.getProduct = function(productId){
+
    var sql = "SELECT p.name, p.price " +
            "FROM " + productTable + " p " +
            " WHERE p.id = '" + productId + "' "
     ;
+
     return query.query(sql, null, function(err, result){
         if( err)
            return null;
@@ -82,7 +87,7 @@ exports.getProduct = function(productId){
 
 exports.searchForProduct = function(cateogryId, queryString){
     var catId = "";
-    if( cateogryId)
+    if( cateogryId && cateogryId >= 0)
        catId = " category = '" + cateogryId + "' AND ";
     var regExpression = "%" + queryString + "%";
     var sql = "SELECT * " +

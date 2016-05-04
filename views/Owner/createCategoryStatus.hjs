@@ -7,6 +7,15 @@
 <a href ="categories"> Go back to Category Page</a>
 <br>
 <a href="home"> Home </a>
+<br>
+<a href="products" > Products </a>
+<br>
+<a href="productBrowsing" > Browse Products </a>
+<br>
+<a href="productOrder"> Product Order</a>
+<br>
+<a href="checkOut">Check Out</a>
+
 
 
 </body>

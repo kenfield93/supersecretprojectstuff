@@ -7,6 +7,7 @@ var general = require("../models/general");
 
 exports.get = function(req, res, next){
     general.noLoggedInRedirect(req.session.loggedIn, res);
+    general.notOwner( req.session.isOwner, res);
 
     var productCreationStatus = req.session.status;
     req.session.status = null;
@@ -15,14 +16,15 @@ exports.get = function(req, res, next){
     var productsDisplay;
     var categoryId = req.query.categoryId;
     req.session.categoryId = categoryId;
+    req.session.storedCategoryId = categoryId;
     var searchResults = req.session.searchedProducts;
     req.session.searchedProducts = null;
 
-    if( searchResults){
+    if( searchResults ){
           renderProductPage(res, productCreationStatus, searchResults, userName);
     }
     else if( categoryId ){
-
+        req.session.searchInput = null;
         productsPromise = getProductsByCategory(categoryId);
 
         productsPromise.then(function(prodDisplay) {
@@ -82,12 +84,12 @@ function createDropDown(categories){
 
 function createCategoryLinks(categories, baseURL){
     var html = "<ul>";
+    html += "<li> <a href='/products?categoryId=" + encodeURIComponent("-1") + "'> All Products</a> </li>" ;
     for(i = 0; i < categories.length; i++){
         // think theres a library for dis to do the encoding
         html += " <li> ";
         // if just using id then function isn't needed
         var dirtyURL = "/products?categoryId=" + encodeURIComponent("" + categories[i].id);
-        console.log("dirty url" + dirtyURL);
         var categoryName = categories[i].name;
         html += "<a href='" + dirtyURL+ "' > " + categoryName + " </a>";
         html += " </li> ";
@@ -97,7 +99,7 @@ function createCategoryLinks(categories, baseURL){
 }
 
 function getProductsByCategory(categoryId){
-    var dbPromise = product.getProductsByCategory(categoryId);
+        var dbPromise = product.getProductsByCategory(categoryId);
     var productList;
 
     return dbPromise.then(function(outcome){
@@ -141,9 +143,10 @@ var createURL = function(result){
     return status.then(function (outcome) {
         if (outcome) {
             var categoryDropDown = createDropDown(outcome);
-
+            var tab = "&nbsp".repeat(25);
             // no categories, so just display the page w/o making a list of them
-
+            if( result.length > 0)
+               html += "<b> Name " + tab + " SKU " + tab + " Price " + " </b>"
             for (i = 0; i < result.length; i++) {
                 html += "<form action = 'changeProduct' method='post' >";
                 html += "<input type = 'text' name='name' placeholder='" + result[i].name + "'>";

@@ -6,6 +6,7 @@ var general  = require("../models/general");
 
 exports.post = function(req, res, next){
     general.noLoggedInRedirect(req.session.loggedIn, res);
+    general.clearProductPageSession(req.session);
 
     if( req.body.deleteButton == undefined){
         console.log("asdf" + req.body.updateButton);

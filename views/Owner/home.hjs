@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
 <body>
 
@@ -15,6 +14,11 @@
     <a href="products" > Products </a>
     <br>
     <a href="productBrowsing" > Browse Products </a>
+    <br>
+    <a href="productOrder"> Product Order</a>
+    <br>
+    <a href="checkOut">Check Out</a>
+    <br>
 </div>
 
 </body>

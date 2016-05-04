@@ -10,7 +10,7 @@ var general = require("../models/general");
 
 exports.post = function(req, res, next){
     general.noLoggedInRedirect(req.session.loggedIn, res);
-
+    general.clearProductPageSession(req.session);
     var userName = req.session.name;
    var name = req.body.categoryName;
     name = name.trim();

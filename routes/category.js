@@ -6,6 +6,8 @@ var general  = require("../models/general");
 
 exports.get = function (req, res, next){
     general.noLoggedInRedirect( req.session.loggedIn, res);
+    general.notOwner( req.session.isOwner, res);
+    general.clearProductPageSession(req.session);
 
     var products = category.hasSomeProducts();
     var status = category.getCategories();
