@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<body>
+<p> Welcome {{ userName }}! </p>
+<a href='/home'> Home </a>
+<br>
+<a href='/checkOut' >Check Out</a>
+<div>
+    <h2>  {{status}} </h2>
+</div>
+
+<br>
+<form action = 'searchProduct' method = 'get' >
+    <input type = "text" name = "searchInput" placeholder="Search Name of Product" required>
+    <button name = 'searchProductsBrowsing' type="submit" >Search</button>
+</form>
+
+<div>
+    {{searchResults}}
+</div>
+
+<div id='categoryDiv' >
+    {{{categoryList}}}
+</div>
+
+<div>
+    {{{productsDisplay }}}
+</div>
+
+</body>
+
+</html>

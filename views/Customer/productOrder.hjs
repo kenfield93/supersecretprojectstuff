@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<body>
+<p> Welcome {{ userName }}! </p>
+<a href='/checkOut' >Check Out</a>
+<div>
+</div>
+
+<div> {{{shoppingCart}}}</div>
+<div> {{{product}}}</div>
+<form action = 'productOrder' method = 'get' >
+    <input type = "number" name = "quantity" placeholder="1" required>
+   <input type = "hidden" name = "name" value= {{name}}>
+    <input type = "hidden" name = "price" value={{price}}>
+    <input type = "hidden" name = "productId" value= {{productId}}>
+
+    <button type="submit" >order</button>
+</form>
+
+
+</body>
+
+</html>

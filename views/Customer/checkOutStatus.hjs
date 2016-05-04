@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<body>
+<p> Welcome {{ userName }}! </p>
+<a href='/checkOut' >Check Out</a>
+<div>
+    <h2> {{status}} </h2>
+</div>
+
+
+<a href="productBrowsing" >Browse Products</a>
+
+
+</body>
+
+</html>

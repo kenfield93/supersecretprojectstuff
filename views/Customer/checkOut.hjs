@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div>
+    <p> Welcome {{ userName }}! </p>
+    <a href='/home' >Home</a>
+    <br>
+    <a href='productBrowsing'>Browse Products</a>
+</div>
+
+<div> {{{shoppingCart}}}</div>
+
+<p> {{name}}</p>
+<form action = 'checkOut' method = 'post' >
+    <input type="text" name = "cardInfo" placeholder="Credit Card Number " required>
+    <button type="submit" >Check Out</button>
+</form>
+
+
+</body>
+
+</html>

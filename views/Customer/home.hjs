@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+
+<p > Welcome {{ userName }}! </p>
+<a href='/checkOut' >Check Out</a>
+<br>
+<a href="productBrowsing" > Browse Products </a>
+<br>
+<a href="productOrder"> Product Order</a>
+
+<br><br>
+<p style="text-align: center"> Home page </p>
+<br><br>
+
+
+</body>
+</html>
