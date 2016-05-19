@@ -28,6 +28,8 @@ exports.post = function(req, res, next) {
                 res.render('Customer/home', {userName: userName});
 
         }
+    }, function(error){
+        res.render('wrongPermission.hjs');
     });
 
 

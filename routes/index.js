@@ -27,6 +27,7 @@ var productBrowsing = require('./productBrowsing');
 var productOrder = require('./productOrder');
 var checkOut = require('./checkOut');
 /* GET home page. */
+
 router.get('/', landing.get );
 router.post('/signin', signin.post);
 router.get('/home', home.get);
