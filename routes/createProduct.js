@@ -21,6 +21,7 @@ exports.post = function(req, res, next){
 
     status.then( function(outcome){
             req.session.status = "Product created Successfully";
+            req.session.categoryId = categoryId;
             res.redirect('searchProduct');
         }, function(outcome){
            req.session.status = "Product failed to be created";

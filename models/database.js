@@ -45,14 +45,57 @@ var product_sold = 'CREATE TABLE product_sold( ' +
                                                 ' product INTEGER not null REFERENCES product_items(id),' +
                                                 ' sales_record INTEGER not null REFERENCES sales_records(id) )'
                   ;
+*/
 
+/*
+var users = " CREATE TABLE users ( " +
+    " id    SERIAL PRIMARY KEY, " +
+    " name  TEXT NOT NULL UNIQUE, " +
+    " owner BOOLEAN not null,  " +
+    " age   INTEGER NOT NULL, " +
+    " state char(2) NOT NULL ); "
+    ;
+
+
+var categories = " CREATE TABLE categories ( " +
+    " id  SERIAL PRIMARY KEY, " +
+    " name  TEXT NOT NULL UNIQUE, " +
+    " description  TEXT NOT NULL, " +
+    " creator INTEGER NOT NULL REFERENCES users(id) );"
+    ;
+
+
+var product_items = " CREATE TABLE product_items ( " +
+    " id SERIAL PRIMARY KEY, " +
+    "  category INTEGER REFERENCES categories (id) NOT NULL, " +
+    " name TEXT NOT NULL, " +
+    " sku TEXT unique not null CHECK(length(sku) > 0), " +
+    " price FLOAT NOT NULL CHECK (price >= 0), " +
+    " is_delete BOOLEAN  );"
+   ;
+
+// note is_delete is not needed for my implementation. I got rid of Not Null so it won't fuck up existing code
+// but kept it so i won't have to change the datagenerator.
+//  if it fucks up the code i'll get rid of it and change the datagenerator
+//
+
+
+var orders = " CREATE TABLE orders ( " +
+    " id SERIAL PRIMARY KEY, " +
+    " user_id INTEGER REFERENCES users (id) NOT NULL, " +
+    " product_id INTEGER REFERENCES product_items (id) NOT NULL, " +
+    " quantity INTEGER NOT NULL, " +
+    " price FLOAT NOT NULL CHECK (price >= 0), " +
+    " is_cart BOOLEAN );"
+    ;
 
 pg.connect(connectionString, function(err, client, done){
     var createUsers = client.query(users);
     var createCategory = client.query(categories);
     var createProduct  = client.query(product_items);
-    var createSalesRecords = client.query(sales_records);
-    var createProductSold = client.query(product_sold);
+    var createOrders   = client.query(orders);
+  //  var createSalesRecords = client.query(sales_records);
+  //  var createProductSold = client.query(product_sold);
 
     done();
 });

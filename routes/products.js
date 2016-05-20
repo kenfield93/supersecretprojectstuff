@@ -9,12 +9,15 @@ exports.get = function(req, res, next){
     general.noLoggedInRedirect(req.session.loggedIn, res);
     general.notOwner( req.session.isOwner, res);
 
+    console.log("I WILL NOT GIVE UP");
     var productCreationStatus = req.session.status;
     req.session.status = null;
 
     var userName = req.session.name;
     var productsDisplay;
     var categoryId = req.query.categoryId;
+    if( req.session.redirectProduct)
+        categoryId = req.session.categoryId;
     req.session.categoryId = categoryId;
     req.session.storedCategoryId = categoryId;
     var searchResults = req.session.searchedProducts;
@@ -23,24 +26,28 @@ exports.get = function(req, res, next){
     if( searchResults ){
           renderProductPage(res, productCreationStatus, searchResults, userName);
     }
-    else if( categoryId ){
+    else {
         req.session.searchInput = null;
         productsPromise = getProductsByCategory(categoryId);
 
         productsPromise.then(function(prodDisplay) {
             productsDisplay = prodDisplay;
-
-            renderProductPage(res, productCreationStatus, productsDisplay, userName );
+            if(  categoryId != undefined && categoryId.toString() != "undefined" ) {
+                renderProductPage(res, productCreationStatus, productsDisplay, userName);
+            }
+            else
+                renderProductPage(res, productCreationStatus, null, userName);
 
         }, function(outcome){
 
         });
     }
-
+/*
     else {
-        renderProductPage(res, productCreationStatus, productsDisplay, userName);
+        res.render("Owner/products", {userName: userName});
 
     }
+    */
 };
 
 

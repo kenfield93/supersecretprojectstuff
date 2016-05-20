@@ -30,23 +30,25 @@ exports.post = function(req, res, next){
     var userId = req.session.userId;
     var shoppingCart = req.session.shoppingCart;
 
-    var salesPromise = salesRecord.createSalesRecord(userId, date);
-    salesPromise.then(function(salesRecordId){
-        for(i = 0; i < shoppingCart.length; i++ ) {
-            salesRecord.createProductSold(shoppingCart[i].price, shoppingCart[i].quantity,
-                                            shoppingCart[i].productId, salesRecordId[0].id);
+    salesRecord.startTransaction();
+    var salesPromise;
+    for(i = 0; i < shoppingCart.length; i++ ) {
+        console.log("item price = " + shoppingCart[i].price);
 
-        }
-    }, function(err){
+
+        salesPromise = salesRecord.createOrder(userId, shoppingCart[i].productId, shoppingCart[i].quantity,
+            shoppingCart[i].price);
+        salesPromise.catch(function (err) {
+            console.log("what bobby");
             req.session.shoppingCart = null;
-            res.render('Customer/checkOutStatus', {userName: req.session.name, status : "Purchase Failed!"});
+            res.render('Customer/checkOutStatus', {userName: req.session.name, status: "Purchase Failed!"});
+        });
     }
-
-    );
+    salesRecord.endTransaction();
 
     req.session.shoppingCart = null;
     res.render('Customer/checkOutStatus', {userName: req.session.name, status : "Purchase Successful!"});
-}
+};
 
 function createProductList(productList){
     var html = "<ul> ";

@@ -22,24 +22,24 @@ exports.get = function(req, res, next){
     if( searchResults ){
         renderProductPage(res, productCreationStatus, searchResults, userName);
     }
-    else if( categoryId ){
+    else {
         req.session.searchInput = null;
         productsPromise = getProductsByCategory(categoryId);
 
         productsPromise.then(function(prodDisplay) {
             productsDisplay = prodDisplay;
-
-            renderProductPage(res, productCreationStatus, productsDisplay, userName );
+            if( categoryId)
+                renderProductPage(res, productCreationStatus, productsDisplay, userName );
+            else { console.log("akls");
+                renderProductPage(res, productCreationStatus, null, userName);
+                console.log("lick me");
+            }
 
         }, function(outcome){
 
         });
     }
 
-    else {
-        renderProductPage(res, productCreationStatus, productsDisplay, userName);
-
-    }
 };
 
 

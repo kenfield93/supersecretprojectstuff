@@ -44,6 +44,7 @@ exports.deleteProduct = function(productId){
     ;
     return query.query(sql, null, function(err, result){
           if(err){
+              console.log("oh no boy, we fucked now");
               return null;
           }
           return true;

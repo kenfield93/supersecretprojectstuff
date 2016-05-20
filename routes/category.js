@@ -12,14 +12,15 @@ exports.get = function (req, res, next){
     var products = category.hasSomeProducts();
     var status = category.getCategories();
     status.then(function(outcome){
+        console.log(" outcome == %j", outcome);
         if(outcome){
+            // since categories w/ one or more products can't be deleted
             products.then(function(categoriesWithAtLeastOneProduct) {
                 var categoryList = createList(outcome, req.session.userId , categoriesWithAtLeastOneProduct);
 
                 res.render("Owner/category", {userName: req.session.name, categoryList: categoryList});
             }, function(err){
-                var categoryList = createList(outcome, req.session.userId);
-
+                var categoryList = createList(outcome, req.session.userId, []);
                 res.render("Owner/category", {userName: req.session.name, categoryList: categoryList});
             });
 
@@ -28,7 +29,10 @@ exports.get = function (req, res, next){
         else{
               res.render("Owner/category", {userName : req.session.name});
         }
-    });
+    }, function(err){
+            res.render("Owner/category", {userName : req.session.name});
+         }
+    );
 
 };
 
@@ -60,7 +64,7 @@ function getButtonHTML(categoryID, nonEmptyCats){
  * Side effects: none
  */
 function createList(categoryList, ownerID, nonEmptyCats){
-
+    console.log("some day");
     var html = "<ul> ";
     for(i = 0; i < categoryList.length; i++){
         html += "<li> ";
@@ -73,6 +77,7 @@ function createList(categoryList, ownerID, nonEmptyCats){
                 html += "</textarea>";
                 // creator is who ever created the category. ownerID is current owner who is viewing the page
                 if(categoryList[i].creator == ownerID) {
+                    console.log("wtf ");
                     html += "<br>" + getButtonHTML(categoryList[i].id, nonEmptyCats);
                 }
              html += "</form>";
@@ -81,6 +86,7 @@ function createList(categoryList, ownerID, nonEmptyCats){
 
         html += "<br><br>";
     }
+    console.log("wtf ");
     html += " </ul>";
     return html;
 }
