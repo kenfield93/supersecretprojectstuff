@@ -26,6 +26,8 @@ var changeProduct = require('./changeProduct');
 var productBrowsing = require('./productBrowsing');
 var productOrder = require('./productOrder');
 var checkOut = require('./checkOut');
+
+var analytics = require('./salesAnalytics');
 /* GET home page. */
 
 router.get('/', landing.get );
@@ -49,6 +51,7 @@ router.get('/productOrder', productOrder.get);
 router.get('/checkOut', checkOut.get);
 router.post('/checkOut', checkOut.post);
 
+router.get('/salesAnalytics', analytics.get);
 //router.get('products/?categoryId=(*)',landing.get );
 
 module.exports = router;

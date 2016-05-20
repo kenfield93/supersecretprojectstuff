@@ -76,7 +76,7 @@ function renderProductPage(res, productCreationStatus, productsDisplay, userName
 /* categories: an array of json objects representing each rows' attributes(collumns)  *
 /
  */
-function createDropDown(categories){
+ function createDropDown(categories){
    var html = "<div> ";
     html += " <select name = category> ";
     for( i = 0; i < categories.length; i++){

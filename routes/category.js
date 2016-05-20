@@ -64,7 +64,7 @@ function getButtonHTML(categoryID, nonEmptyCats){
  * Side effects: none
  */
 function createList(categoryList, ownerID, nonEmptyCats){
-    console.log("some day");
+
     var html = "<ul> ";
     for(i = 0; i < categoryList.length; i++){
         html += "<li> ";
@@ -86,7 +86,6 @@ function createList(categoryList, ownerID, nonEmptyCats){
 
         html += "<br><br>";
     }
-    console.log("wtf ");
     html += " </ul>";
     return html;
 }
