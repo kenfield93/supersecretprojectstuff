@@ -28,6 +28,7 @@ var productOrder = require('./productOrder');
 var checkOut = require('./checkOut');
 
 var analytics = require('./salesAnalytics');
+var similarProducts = require('./similarProducts');
 /* GET home page. */
 
 router.get('/', landing.get );
@@ -52,6 +53,7 @@ router.get('/checkOut', checkOut.get);
 router.post('/checkOut', checkOut.post);
 
 router.get('/salesAnalytics', analytics.get);
+router.get('/similarProducts', similarProducts.get);
 //router.get('products/?categoryId=(*)',landing.get );
 
 module.exports = router;
