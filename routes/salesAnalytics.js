@@ -25,8 +25,20 @@ exports.get = function(req, res, next){
         var sortUsers = req.query.rows; // rows of chart (by consumers or states)
         var sortProducts = req.query.cols; // columns of chart ( by category, either all cats, or a specific one)
 
-      //  var productPromise = analytics.getColumns(sortProducts, orderBy);
-       // var rowPromise = analytics.getRows(sortProducts, orderBy, sortUsers);
+        /* testing similarProd */
+
+        var similarPromise = analytics.pv();
+        similarPromise.then(function(outcome){
+            console.log("\n\n");
+            console.log("similar Prod %j", outcome);
+            console.log("\n\n");
+        }, function(err){
+            console.log("\n\n");
+            console.log("similar Prod error %j", err);
+            console.log("\n\n");
+        });
+
+        /*  done testing similarProd               */
         var columnPromise = analytics.getColumns(sortProducts, orderBy);
         console.log("sheeeit");
         var cellPromise = analytics.getCells(sortProducts, orderBy, sortUsers);
