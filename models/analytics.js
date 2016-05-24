@@ -24,7 +24,7 @@ var query = require("./database.js");
              " ORDER BY p.name " +
              " LIMIT 20 ) " +
 
-             " SELECT topProducts.name AS name, coalesce(SUM(o.price * o.quantity), 0) AS total " +
+             " SELECT topProducts.name , coalesce(SUM(o.price * o.quantity), 0) AS total " +
              " FROM topProducts LEFT JOIN orders o " +
              " ON topProducts.id = o.product_id " +
              " GROUP BY topProducts.name" +
@@ -32,6 +32,23 @@ var query = require("./database.js");
          ;
      }
      else{
+         sql += " WITH categoryProducts AS " +
+             " (SELECT p.id, p.name FROM product_items p " + categoryStmt + " )" +
+
+             " SELECT x.name, x.total  " +
+             "FROM (SELECT p.name, coalesce(SUM(o.price * o.quantity), 0) AS total " +
+                    " FROM categoryProducts p LEFT JOIN orders o ON p.id = o.product_id " +
+                    " GROUP BY p.name ) x " +
+             " ORDER BY x.total DESC LIMIT 20 "
+         ;
+         /*
+        sql += "WITH topProducts AS " +
+            "( SELECT p.id, p.name " +
+                " FROM product_items p JOIN orders o " +
+                 " ON p.id = o.product_id " + categoryStmt +
+                " GROUP BY p.id, p.name " +
+                " ORDER BY o.price"
+                */
 
      }
 
@@ -170,6 +187,64 @@ exports.getCells = function(categoryId, orderBy, customerFilter){
          }
     }
     else{
+        sql = " WITH categoryProducts AS " +
+                 " (SELECT p.id, p.name FROM product_items p " + categoryStmt + " )" +
+/*
+            ", topProducts AS" +
+            "( SELECT x.name, x.total, x.id  " +
+              "FROM (SELECT p.name, p.id, coalesce(SUM(o.price * o.quantity), 0) AS total " +
+                 " FROM categoryProducts p LEFT JOIN orders o ON p.id = o.product_id " +
+                 " GROUP BY p.name, p.id ) x " +
+             " ORDER BY x.total DESC LIMIT 20 ) " +
+*/
+                // have to sort by category doe
+         "  , topCustomers AS " +
+            " (SELECT x.total, x.id, x." + customerSelection +
+            " FROM ( SELECT u.id, u." + customerSelection + ", coalesce(SUM(o.price * o.quantity), 0) AS total " +
+                " FROM users u LEFT JOIN ( SELECT o.* FROM categoryProducts p JOIN orders o ON p.id = o.product_id  ) o ON u.id = o.user_id " +
+                " GROUP BY u.id, u." + customerSelection + " ) x " +
+            " ORDER BY x.total DESC  LIMIT 10 ) " +
+
+
+            ", filteredProducts AS " +
+            " (SELECT o.price, o.quantity, o.user_id" +
+            " FROM categoryProducts c, orders o" +
+            " WHERE c.id = o.product_id " +
+            " )  "
+
+            +
+
+            " , topProducts AS " +
+            "( SELECT x.name, x.total, x.id  " +
+            "FROM (SELECT p.name, p.id, coalesce(SUM(o.price * o.quantity), 0) AS total " +
+            " FROM categoryProducts p LEFT JOIN orders o ON p.id = o.product_id " +
+            " GROUP BY p.name, p.id) x " +
+            " ORDER BY x.total  DESC LIMIT 20 ) "
+
+        ;
+
+        if( customerFilter == "customer") {
+           // sql += " SELECT * FROM topCustomers ";
+            //sql += " SELECT * FROM topProducts ";
+
+            sql += " SELECT  rows.name, rows.total, coalesce(SUM(f.price * f.quantity), 0 ) as aggregate" +
+                " FROM (SELECT rows.rowOrdering, rows.userName as name, rows.productName, rows.user, coalesce(SUM(o.price * o.quantity),0) as total " +
+                     " FROM  ( SELECT c.name AS userName , p.name AS productName , p.total AS rowOrdering, p.id AS product, c.id AS user  " +
+                         " FROM topProducts p , topCustomers c  GROUP BY c.name, p.total, p.name, p.id, c.id ORDER BY c.name, p.total DESC ) rows " +
+
+                    " LEFT JOIN orders o ON o.product_id = rows.product AND o.user_id = rows.user " +
+                    " GROUP BY rows.userName, rows.rowOrdering, rows.productName, rows.user ORDER BY rows.userName, rows.rowOrdering DESC ) rows " +
+                " LEFT JOIN filteredProducts f ON rows.user = f.user_id GROUP BY rows.total, rows.user, rows.Name, rows.productName, rows.rowOrdering  ORDER BY coalesce(SUM(f.price * f.quantity), 0 ) DESC, rows.name, rows.rowOrdering DESC  "
+            ;
+
+
+        }
+        else{
+
+        }
+
+
+
 
     }
 
@@ -191,85 +266,6 @@ exports.getCells = function(categoryId, orderBy, customerFilter){
 // returns
 
 
-
-exports.getRows = function (categoryId, orderBy, customerFilter){
-    var categoryStmt = "";
-    var categoryTopK = "";
-    var customerSelection = "";
-
-    if( categoryId >= 0){
-        categoryStmt = " WHERE p.category = " + categoryId + " ";
-        categoryTopK = " JOIN product_items p ON o.product_id = p.id "
-    }
-    if( customerFilter == "customer"){
-        customerSelection = "name ";
-    }
-    else{ // filter by state
-        customerSelection = "state";
-    }
-
-
-    var sql = "";
-    if( orderBy == "alphabetic") {
-        sql +=
-            // get getustomer info
-            " WITH topCustomers AS " +
-            " (SELECT u.id, u." + customerSelection +
-            " FROM users u " +
-            " ORDER BY u." + customerSelection +
-            " LIMIT 10 ) " +
-
-            ", categoryProducts AS " +
-            " (SELECT p.id FROM product_items p " + categoryStmt + " )" +
-
-          ", filteredProducts AS " +
-            " (SELECT o.price, o.quantity, o.user_id" +
-            " FROM categoryProducts, orders o" +
-            " WHERE categoryProducts.id = o.product_id " +
-            " )" +
-
-
-
-            " SELECT  topCustomers.name, coalesce( SUM(filteredProducts.price * filteredProducts.quantity), 0) AS total" +
-            " FROM ( topCustomers " +
-            " LEFT JOIN filteredProducts " +
-            " ON topCustomers.id = filteredProducts.user_id) " +
-            " GROUP BY  topCustomers.name " +
-            " ORDER BY topCustomers.name" +
-            "  "
-
-
-        ;
-    }
-    // TODO: might be a problem where price of a product was changed so that and order's price aren't in synch
-    // can i use a view to not have to use SUM (..) for SELECT and ORDER BY ?
-    else { //top K
-
-        sql += "WITH topProducts AS  " +
-
-                " ( SELECT o.product_id, coalesce( SUM(o.price * o.quantity), 0) AS total " +
-                " FROM orders o " + categoryTopK +
-                " GROUP BY o.product_id, o.price" +
-                " ORDER BY SUM(o.price * o.quantity) DESC" +
-                " LIMIT 20)  " +
-
-               " SELECT p.name, coalesce(topProducts.total,0) as total " +
-               " FROM topProducts RIGHT JOIN  product_items p " +
-               " ON topProducts.product_id = p.id " + categoryStmt +
-               " ORDER BY coalesce(topProducts.total, 0) DESC; "
-        ;
-    }
-
-    return query.query(sql, null, function(err, result){
-        if(err)
-            return null;
-        if( result.rowCount == 0 )
-            return false;
-        return result.rows;
-    });
-
-
-};
 
 exports.pv = function(){
 

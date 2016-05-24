@@ -44,8 +44,7 @@ exports.get = function(req, res, next){
         var cellPromise = analytics.getCells(sortProducts, orderBy, sortUsers);
         console.log("shoot");
         columnPromise.then( function(cols) {
-            console.log("me");
-            console.log("pretty");
+            console.log(" columns %j", cols);
             cellPromise.then(function(cell){
                 console.log("plz");
                 var chart = createChart( cols,  cell);
