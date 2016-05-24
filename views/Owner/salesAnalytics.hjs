@@ -8,33 +8,42 @@
 <br><br>
 
 <br><br>
-<div>
- <form method="get">
-     <p> Order By</p>
-     <select name="order">
-         <option value="alphabetic">Alphabetic </option>
-         <option value="top">Top K</option>
-     </select>
-     <p> User Filter</p>
-     <select name="rows" >
-         <option value="customer">Customers</option>
-         <option value="state">States</option>
-     </select>
+<div >
+ <form method="get" >
+     <div style = "{{displayFilters}}">
+        <p> Order By</p>
+        <select name="order">
+            <option value="alphabetic">Alphabetic </option>
+             <option value="top">Top K</option>
+        </select>
+     </div>
+     <div style = "{{displayFilters}}">
+        <p> User Filter</p>
+        <select name="rows" >
+            <option value="customer">Customers</option>
+             <option value="state">States</option>
+        </select>
+     </div>
+     <div style = "{{displayFilters}}">
      <p> Product Filter</p>
      <select name="cols" >
          <option value="-1">All Categories</option>
          {{{categoryDropDown}}
      </select>
+     </div>
      <br>
      <button name="displayAnal" value="true" type="submit">run query</button>
+     <br>
+     {{{nextUsers}}} {{{nextProducts}}}
  </form>
 
 </div>
 <br>
 <div>
     <table border="1">
-        {{{chart}}
+        {{{chart}}}
     </table>
+
 </div>
 </body>
 </html>
