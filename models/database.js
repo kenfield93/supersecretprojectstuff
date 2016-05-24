@@ -114,7 +114,6 @@ module.exports = {
                         var outcome;
                         done();
                         outcome = cb(err, result);
-                        //console.log("Session: %j", outcome);
                         if( outcome == false || outcome == null) {
                             reject(err);
                         }
