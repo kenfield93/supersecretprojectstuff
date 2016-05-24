@@ -127,47 +127,7 @@ exports.getCells = function(categoryId, orderBy, customerFilter){
          }
         else{
        //      sql += " SELECT u.state FROM topCustomers u, topProducts p GROUP BY u.state ORDER BY u.state ";
-/*
-         sql +=  " SELECT rows.state, rows.aggregate,  coalesce(SUM(rows.total), 0) as total  " +
-             "FROM ( SELECT rows.state, rows.productName, rows.total, coalesce(SUM(f.price * f.quantity), 0 ) as aggregate " +
-                 " FROM (SELECT  rows.state, rows.productName, rows.user, coalesce( SUM(o.price * o.quantity),0 ) as total"  +
 
-                        " FROM  (SELECT u.id as user, p.id as product, u.state , p.name as productName FROM topCustomers u , topProducts p " +
-                        " ORDER BY u.state, u.id, p.name, p.id) rows " +
-                 " LEFT JOIN orders o ON o.product_id = rows.product AND o.user_id = rows.user " +
-                 " GROUP BY rows.state, rows.user, rows.productName ORDER BY rows.state, rows.productName) rows " +
-             " LEFT JOIN filteredProducts f ON rows.user = f.user_id GROUP BY rows.total, rows.user, rows.state, rows.productName ORDER BY rows.state, rows.productName  ) rows " +
-         " GROUP BY rows.state, rows.productName, rows.aggregate ORDER BY rows.state "
-         */
-
-             /*
-             sql +=  " SELECT rows.state ,  coalesce(SUM(rows.total), 0) as total  " +
-              //   "FROM ( SELECT rows.state, rows.productName, rows.total, coalesce(SUM(f.price * f.quantity), 0 ) as aggregate " +
-                 " FROM (SELECT  rows.state, rows.productName, rows.user, coalesce( SUM(o.price * o.quantity),0 ) as total"  +
-
-                 " FROM  (SELECT u.id as user, p.id as product, u.state , p.name as productName FROM topCustomers u , topProducts p " +
-                 " ORDER BY u.state, u.id, p.name, p.id) rows " +
-                 " LEFT JOIN orders o ON o.product_id = rows.product AND o.user_id = rows.user " +
-                 " GROUP BY rows.state, rows.user, rows.productName ORDER BY rows.state, rows.productName) rows " +
-           //      " LEFT JOIN filteredProducts f ON rows.user = f.user_id GROUP BY rows.total, rows.user, rows.state, rows.productName ORDER BY rows.state, rows.productName  ) rows " +
-                 " GROUP BY rows.state, rows.productName  ORDER BY rows.state, rows.productName "
-                 */
-
-             /*
-             sql +=
-                    " SELECT rows.state AS name , rows.total, coalesce(SUM(f.price * f.quantity), 0 ) as aggregate " +
-                 " FROM ( SELECT rows.state  , rows.user, rows.productName,  coalesce(SUM(rows.total), 0) as total  " +
-
-                 " FROM (SELECT  rows.state, rows.productName, rows.user, coalesce( SUM(o.price * o.quantity),0 ) as total"  +
-
-                 " FROM  (SELECT u.id as user, p.id as product, u.state , p.name as productName FROM topCustomers u , topProducts p " +
-                 " ORDER BY u.state, u.id, p.name, p.id) rows " +
-                 " LEFT JOIN orders o ON o.product_id = rows.product AND o.user_id = rows.user " +
-                 " GROUP BY rows.state, rows.user, rows.productName ORDER BY rows.state, rows.productName) rows " +
-
-                 " GROUP BY rows.state, rows.productName, rows.user  ORDER BY rows.state, rows.productName ) as rows " +
-                 " LEFT JOIN filteredProducts f ON rows.user = f.user_id  GROUP BY rows.state, rows.productName, rows.total ORDER BY rows.state, rows.productName    "
-                 */
 
             // sql += " (SELECT state, coalesce(SUM(x.price * x.quantity),0) AS total FROM (SELECT o.user_id, o.price, o.quantity FROM categoryProducts p JOIN orders o ON p.id = o.product_id ) x RIGHT JOIN topCustomers u ON u.id = x.user_id  GROUP BY u.state) "
 
@@ -240,6 +200,63 @@ exports.getCells = function(categoryId, orderBy, customerFilter){
 
         }
         else{
+          //  sql += "SELECT state, coalesce(SUM(x.price * x.quantity), 0) as total FROM ( SELECT o.user_id, o.price, o.quantity FROM categoryProducts p LEFT JOIN orders o ON p.id = o.product_id ) x RIGHT JOIN topCustomers u ON u.id = x.user_id GROUP BY u.state "
+
+            sql +=
+                "SELECT   rows.state AS name, x.total AS aggregate, coalesce(SUM(rows.total), 0) as total " +
+                    //   "FROM (SELECT rows.rowOrdering, rows.state, rows.productName, rows.user, coalesce( SUM(rows.total), 0 ) as total " +
+                " FROM (SELECT rows.rowOrdering, rows.state, rows.productName, rows.user, coalesce( SUM(o.price * o.quantity), 0 ) as total " +
+                " FROM ( SELECT p.total AS rowOrdering, u.id as user, p.id as product, u.state , p.name as productName " +
+                " FROM topCustomers u , topProducts p " +
+                " ORDER BY u.id, p.total DESC, u.state, p.name, p.id ) rows " +
+                " LEFT JOIN orders o ON o.product_id = rows.product AND o.user_id = rows.user " +
+                " GROUP BY rows.user, rows.rowOrdering, rows.state, rows.productName ORDER BY rows.user, rows.rowOrdering DESC ) rows " +
+                    //   " GROUP BY rows.state, rows.rowOrdering, rows.productName, rows.user ORDER BY rows.state, rows.rowOrdering DESC ) rows "+
+                " JOIN ( SELECT state, coalesce(SUM(x.price * x.quantity), 0) as total FROM ( SELECT o.user_id, o.price, o.quantity FROM categoryProducts p LEFT JOIN orders o ON p.id = o.product_id ) x RIGHT JOIN topCustomers u ON u.id = x.user_id GROUP BY u.state) x " +
+                " ON x.state = rows.state  GROUP BY rows.state, rows.rowOrdering, x.total, rows.productName ORDER BY  x.total DESC , rows.state, rows.rowOrdering DESC "
+
+            /*
+        sql +=
+            "SELECT   rows.state AS name, x.total AS aggregate, coalesce(SUM(rows.total), 0) as total " +
+         //   "FROM (SELECT rows.rowOrdering, rows.state, rows.productName, rows.user, coalesce( SUM(rows.total), 0 ) as total " +
+                "FROM (SELECT rows.rowOrdering, rows.state, rows.productName, rows.user, coalesce( SUM(o.price * o.quantity), 0 ) as total " +
+                     "FROM ( SELECT p.total AS rowOrdering, u.id as user, p.id as product, u.state , p.name as productName " +
+                         " FROM topCustomers u , topProducts p " +
+                        " ORDER BY u.id, p.total DESC, u.state, p.name, p.id ) rows " +
+                     " LEFT JOIN orders o ON o.product_id = rows.product AND o.user_id = rows.user " +
+                     " GROUP BY rows.user, rows.rowOrdering, rows.state, rows.productName ORDER BY rows.user, rows.rowOrdering DESC ) rows " +
+             //   " GROUP BY rows.state, rows.rowOrdering, rows.productName, rows.user ORDER BY rows.state, rows.rowOrdering DESC ) rows "+
+            "JOIN ( SELECT state, coalesce(SUM(x.price * x.quantity), 0) as total FROM ( SELECT o.user_id, o.price, o.quantity FROM categoryProducts p LEFT JOIN orders o ON p.id = o.product_id ) x RIGHT JOIN topCustomers u ON u.id = x.user_id GROUP BY u.state) x " +
+            " ON x.state = rows.state GROUP BY rows.state, rows.rowOrdering, x.total ORDER BY  x.total DESC , rows.state, rows.rowOrdering DESC "
+        ;
+        */
+            /*
+            sql +=
+                "SELECT rows.rowOrdering, rows.state, rows.productName, rows.user, coalesce( SUM(o.price * o.quantity), 0 ) as total " +
+                "FROM ( SELECT p.total AS rowOrdering, u.id as user, p.id as product, u.state , p.name as productName " +
+                    " FROM topCustomers u , topProducts p " +
+                    " ORDER BY u.id, p.total DESC, u.state, p.name, p.id ) rows " +
+                " LEFT JOIN orders o ON o.product_id = rows.product AND o.user_id = rows.user " +
+                 " GROUP BY rows.user, rows.rowOrdering, rows.state, rows.productName ORDER BY rows.user, rows.rowOrdering DESC " +
+
+*/
+
+            ;
+            /*
+            // alpha state
+            sql +=  " SELECT rows.state AS name , x.total AS aggregate, coalesce(SUM(rows.total), 0) as total  " +
+                    // " FROM( SELECT    " +
+                " FROM (SELECT  rows.state, rows.productName, rows.user, coalesce( SUM(o.price * o.quantity),0 ) as total"  +
+
+                " FROM  (SELECT u.id as user, p.id as product, u.state , p.name as productName FROM topCustomers u , topProducts p " +
+                " ORDER BY u.state, u.id, p.name, p.id) rows " +
+                " LEFT JOIN orders o ON o.product_id = rows.product AND o.user_id = rows.user " +
+                " GROUP BY rows.state, rows.user, rows.productName ORDER BY rows.state, rows.productName) rows " +
+                    //  "  )"
+                " JOIN   (SELECT state, coalesce(SUM(x.price * x.quantity),0) AS total FROM (SELECT o.user_id, o.price, o.quantity FROM categoryProducts p JOIN orders o ON p.id = o.product_id ) x RIGHT JOIN topCustomers u ON u.id = x.user_id  GROUP BY u.state)  x" +
+                " ON x.state = rows.state GROUP BY rows.state, rows.productName, x.total ORDER BY rows.state, rows.productName "
+
+            */
 
         }
 

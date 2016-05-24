@@ -103,6 +103,7 @@ function createChart(columnsTitles, cells){
 
     currName = "";
     console.log("ello matey %j", cells);
+    console.log("Cells.length = " + cells.length);
     if(rows.length > 0)
         currName = rows[0].name;
 
