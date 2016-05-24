@@ -19,12 +19,10 @@
     <br>
     <a href="checkOut">Check Out</a>
     <br>
-    <a href="salesAnalytics">Analystics</a>
+    <a href="salesAnalytics">Analytics</a>
     <br>
-    <!--
     <a href="similarProducts">Similar Products</a>
     <br>
-    -->
 </div>
 
 </body>

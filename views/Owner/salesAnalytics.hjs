@@ -6,7 +6,7 @@
 
 <p style="text-align: left"> Welcome {{ userName }}! </p>
 <br><br>
-
+<a href="home"> Home </a>
 <br><br>
 <div >
  <form method="get" >
@@ -32,7 +32,9 @@
      </select>
      </div>
      <br>
-     <button name="displayAnal" value="true" type="submit">run query</button>
+     <div style = "{{displayFilters}}">
+        <button name="displayAnal" value="true" type="submit">run query</button>
+     </div>
      <br>
      {{{nextUsers}}} {{{nextProducts}}}
  </form>

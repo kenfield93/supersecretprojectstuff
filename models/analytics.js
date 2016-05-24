@@ -42,7 +42,6 @@ var query = require("./database.js");
              " ORDER BY x.total DESC LIMIT 20 OFFSET " + productOffset
          ;
 
-
      }
 
      return query.query(sql, null, function(err, result){
@@ -56,11 +55,10 @@ var query = require("./database.js");
 
 
 exports.getCells = function(categoryId, orderBy, customerFilter, productOffset, customerOffset){
-    console.log("naos");
     var categoryStmt = "";
     var categoryTopK = "";
     var customerSelection = "";
- console.log("wtf");
+
     if( categoryId >= 0){
         categoryStmt = " WHERE p.category = " + categoryId;
         categoryTopK = " JOIN product_items p ON o.product_id = p.id"
@@ -131,7 +129,6 @@ exports.getCells = function(categoryId, orderBy, customerFilter, productOffset, 
         sql = " WITH categoryProducts AS " +
                  " (SELECT p.id, p.name FROM product_items p " + categoryStmt + " )" +
 
-
          "  , topCustomers AS " +
             " (SELECT x.total, x.id, x." + customerSelection +
             " FROM ( SELECT u.id, u." + customerSelection + ", coalesce(SUM(o.price * o.quantity), 0) AS total " +
@@ -144,9 +141,7 @@ exports.getCells = function(categoryId, orderBy, customerFilter, productOffset, 
             " (SELECT o.price, o.quantity, o.user_id" +
             " FROM categoryProducts c, orders o" +
             " WHERE c.id = o.product_id " +
-            " )  "
-
-            +
+            " )  " +
 
             " , topProducts AS " +
             "( SELECT x.name, x.total, x.id  " +
@@ -158,8 +153,6 @@ exports.getCells = function(categoryId, orderBy, customerFilter, productOffset, 
         ;
 
         if( customerFilter == "customer") {
-           // sql += " SELECT * FROM topCustomers ";
-            //sql += " SELECT * FROM topProducts ";
 
             sql += " SELECT  rows.name, rows.total, coalesce(SUM(f.price * f.quantity), 0 ) as aggregate" +
                 " FROM (SELECT rows.rowOrdering, rows.userName as name, rows.productName, rows.user, coalesce(SUM(o.price * o.quantity),0) as total " +
@@ -170,7 +163,6 @@ exports.getCells = function(categoryId, orderBy, customerFilter, productOffset, 
                     " GROUP BY rows.userName, rows.rowOrdering, rows.productName, rows.user ORDER BY rows.userName, rows.rowOrdering DESC ) rows " +
                 " LEFT JOIN filteredProducts f ON rows.user = f.user_id GROUP BY rows.total, rows.user, rows.Name, rows.productName, rows.rowOrdering  ORDER BY coalesce(SUM(f.price * f.quantity), 0 ) DESC, rows.name, rows.rowOrdering DESC  "
             ;
-
 
         }
         else{
@@ -189,52 +181,9 @@ exports.getCells = function(categoryId, orderBy, customerFilter, productOffset, 
                 " JOIN ( SELECT state, coalesce(SUM(x.price * x.quantity), 0) as total FROM ( SELECT o.user_id, o.price, o.quantity FROM categoryProducts p LEFT JOIN orders o ON p.id = o.product_id ) x RIGHT JOIN topCustomers u ON u.id = x.user_id GROUP BY u.state) x " +
                 " ON x.state = rows.state  GROUP BY rows.state, rows.rowOrdering, x.total, rows.productName ORDER BY  x.total DESC , rows.state, rows.rowOrdering DESC "
 
-            /*
-        sql +=
-            "SELECT   rows.state AS name, x.total AS aggregate, coalesce(SUM(rows.total), 0) as total " +
-         //   "FROM (SELECT rows.rowOrdering, rows.state, rows.productName, rows.user, coalesce( SUM(rows.total), 0 ) as total " +
-                "FROM (SELECT rows.rowOrdering, rows.state, rows.productName, rows.user, coalesce( SUM(o.price * o.quantity), 0 ) as total " +
-                     "FROM ( SELECT p.total AS rowOrdering, u.id as user, p.id as product, u.state , p.name as productName " +
-                         " FROM topCustomers u , topProducts p " +
-                        " ORDER BY u.id, p.total DESC, u.state, p.name, p.id ) rows " +
-                     " LEFT JOIN orders o ON o.product_id = rows.product AND o.user_id = rows.user " +
-                     " GROUP BY rows.user, rows.rowOrdering, rows.state, rows.productName ORDER BY rows.user, rows.rowOrdering DESC ) rows " +
-             //   " GROUP BY rows.state, rows.rowOrdering, rows.productName, rows.user ORDER BY rows.state, rows.rowOrdering DESC ) rows "+
-            "JOIN ( SELECT state, coalesce(SUM(x.price * x.quantity), 0) as total FROM ( SELECT o.user_id, o.price, o.quantity FROM categoryProducts p LEFT JOIN orders o ON p.id = o.product_id ) x RIGHT JOIN topCustomers u ON u.id = x.user_id GROUP BY u.state) x " +
-            " ON x.state = rows.state GROUP BY rows.state, rows.rowOrdering, x.total ORDER BY  x.total DESC , rows.state, rows.rowOrdering DESC "
-        ;
-        */
-            /*
-            sql +=
-                "SELECT rows.rowOrdering, rows.state, rows.productName, rows.user, coalesce( SUM(o.price * o.quantity), 0 ) as total " +
-                "FROM ( SELECT p.total AS rowOrdering, u.id as user, p.id as product, u.state , p.name as productName " +
-                    " FROM topCustomers u , topProducts p " +
-                    " ORDER BY u.id, p.total DESC, u.state, p.name, p.id ) rows " +
-                " LEFT JOIN orders o ON o.product_id = rows.product AND o.user_id = rows.user " +
-                 " GROUP BY rows.user, rows.rowOrdering, rows.state, rows.productName ORDER BY rows.user, rows.rowOrdering DESC " +
-
-*/
-
             ;
-            /*
-            // alpha state
-            sql +=  " SELECT rows.state AS name , x.total AS aggregate, coalesce(SUM(rows.total), 0) as total  " +
-                    // " FROM( SELECT    " +
-                " FROM (SELECT  rows.state, rows.productName, rows.user, coalesce( SUM(o.price * o.quantity),0 ) as total"  +
-
-                " FROM  (SELECT u.id as user, p.id as product, u.state , p.name as productName FROM topCustomers u , topProducts p " +
-                " ORDER BY u.state, u.id, p.name, p.id) rows " +
-                " LEFT JOIN orders o ON o.product_id = rows.product AND o.user_id = rows.user " +
-                " GROUP BY rows.state, rows.user, rows.productName ORDER BY rows.state, rows.productName) rows " +
-                    //  "  )"
-                " JOIN   (SELECT state, coalesce(SUM(x.price * x.quantity),0) AS total FROM (SELECT o.user_id, o.price, o.quantity FROM categoryProducts p JOIN orders o ON p.id = o.product_id ) x RIGHT JOIN topCustomers u ON u.id = x.user_id  GROUP BY u.state)  x" +
-                " ON x.state = rows.state GROUP BY rows.state, rows.productName, x.total ORDER BY rows.state, rows.productName "
-
-            */
 
         }
-
-
 
 
     }
@@ -247,31 +196,24 @@ exports.getCells = function(categoryId, orderBy, customerFilter, productOffset, 
         return result.rows;
     });
 };
-/*
- 1. Column names is the name of each product w/ the aggregate sales in paren.
- only shows 10 products at a time. Probably display N/A if there aren’t 10 products that meet filter criteria
- aggregate sales is 0 and is still displayed if none of that item was bought
- NOTE: ask if the aggregate sales is of the 20 current customers/states  or all of them
- */
-
-// returns
 
 
 
-exports.pv = function(){
+exports.displayNextButtons = function(categoryId, customerType){
+    var categoryStmt = "";
+    var customerSelection;
+    if( categoryId >= 0)
+        categoryStmt = " WHERE p.category = " + categoryId;
+    if( customerType == "customer"){
+        customerSelection = "name ";
+    }
+    else{ // filter by state
+        customerSelection = "state";
+    }
 
-    var sql = " WITH customersOrders AS " +
-            " (SELECT o.product_id AS prodId, u.name AS userName , SUM(o.price * o.quantity) AS moneySpent" +
-            " FROM orders o JOIN users u " +
-            " ON o.user_id = u.id " +
-            " GROUP BY o.product_id, u.name ORDER BY u.name) " +
+    var sql = " SELECT p.productCount, c.customer FROM (SELECT COUNT(p.id) AS productCount  FROM product_items p " + categoryStmt + ") AS p, " +
+         " (SELECT COUNT(DISTINCT u." + customerSelection + " ) AS customer FROM users u ) AS c ";
 
-            " SELECT p.name, coalesce(c.moneySpent, 0)     " +
-            " FROM product_items p LEFT JOIN customersOrders c ON p.id = c.prodId " +
-            " GROUP BY p.name, c.moneySpent  ORDER BY p.name, c.moneySpent"
-
-
-        ;
 
     return query.query(sql, null, function(err, result){
         if(err)

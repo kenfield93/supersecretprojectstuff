@@ -32,34 +32,45 @@ exports.get = function(req, res, next){
 
         /* testing similarProd */
 
-        var similarPromise = analytics.pv();
-        similarPromise.then(function(outcome){
-            console.log("\n\n");
-            console.log("similar Prod %j", outcome);
-            console.log("\n\n");
-        }, function(err){
-            console.log("\n\n");
-            console.log("similar Prod error %j", err);
-            console.log("\n\n");
-        });
+    console.log("por que");
+        var buttPromise = analytics.displayNextButtons(sortProducts, sortUsers );
 
         /*  done testing similarProd               */
         var columnPromise = analytics.getColumns(sortProducts, orderBy, req.session.productOffset);
         var cellPromise = analytics.getCells(sortProducts, orderBy, sortUsers, req.session.productOffset, req.session.customerOffset);
         columnPromise.then( function(cols) {
-            console.log(" columns %j", cols);
+     //       console.log(" columns %j", cols);
             cellPromise.then(function(cell){
                 var chart = createChart( cols,  cell);
                 if( (! req.query.nextCustomer) && (! req.query.nextProduct)  ) {
                     var catDropDown = category.getCategories();
                     catDropDown.then(function (dropCat) {
+
                             var dropDown = createCategoryDropDown(dropCat);
-                            res.render('Owner/salesAnalytics', {
-                                userName: req.session.name,
-                                categoryDropDown: dropDown,
-                                chart: chart,
-                                nextUsers: createNextCustomerButton(isName(cell[0]), true),
-                                nextProducts: createNextProductButton(true)
+                            buttPromise.then(function(hasStuff) {
+                                var cStatus = false,
+                                    pStatus = false;
+                                if(  (hasStuff[0].customer - req.session.customerOffset - 10 ) > 0)
+                                    cStatus = true;
+                                if(  (hasStuff[0].productcount - req.session.productOffset - 20 ) > 0 )
+                                    pStatus = true;
+
+                                console.log("cstatus = " + cStatus + " pstatus = " + pStatus + " outcome %j \n", hasStuff);
+                                res.render('Owner/salesAnalytics', {
+                                    userName: req.session.name,
+                                    categoryDropDown: dropDown,
+                                    chart: chart,
+                                    nextUsers: createNextCustomerButton(isName(cell[0]), cStatus),
+                                    nextProducts: createNextProductButton(pStatus)
+                                });
+                            }, function (err){
+                                res.render('Owner/salesAnalytics', {
+                                    userName: req.session.name,
+                                    categoryDropDown: dropDown,
+                                    chart: chart,
+                                    nextUsers: createNextCustomerButton(isName(cell[0]), false),
+                                    nextProducts: createNextProductButton(false)
+                                });
                             });
                         }, function (err) {
                             res.render('Owner/salesAnalytics', {userName: req.session.name});
@@ -67,15 +78,31 @@ exports.get = function(req, res, next){
                     );
                 }
                 else{
-                    if(true) // if there is some next to display
-                    res.render('Owner/salesAnalytics', {
+                    buttPromise.then(function(hasStuff) {
+                        var cStatus = false,
+                            pStatus = false;
+                        if(  (hasStuff[0].customer - req.session.customerOffset - 10 ) > 0)
+                            cStatus = true;
+                        if(  (hasStuff[0].productcount - req.session.productOffset - 20 ) > 0 )
+                            pStatus = true;
+
+                        res.render('Owner/salesAnalytics', {
                             userName: req.session.name,
                             chart: chart,
                             displayFilters: "display: none;",
-                            nextUsers: createNextCustomerButton(isName(cell[0]), true),
-                            nextProducts: createNextProductButton(true)
-                        }
-                    );
+                            nextUsers: createNextCustomerButton(isName(cell[0]), cStatus),
+                            nextProducts: createNextProductButton(pStatus)
+                        });
+                    }, function (err){
+                        res.render('Owner/salesAnalytics', {
+                            userName: req.session.name,
+                            chart: chart,
+                            displayFilters: "display: none;",
+                            nextUsers: createNextCustomerButton(isName(cell[0]), false),
+                            nextProducts: createNextProductButton(false)
+                        });
+                    });
+
                 }
             });
 
@@ -126,7 +153,6 @@ function createChart(columnsTitles, cells){
         names[getName(rows[i])] = "<tr> <td> <b> " + getName(rows[i]) + " $ " + rows[i].total + "</b> </td> ";
     }
 
-
     currName = "";
     console.log("ello matey %j", cells);
     console.log("Cells.length = " + cells.length);
@@ -150,7 +176,6 @@ function createChart(columnsTitles, cells){
 
     return html;
 }
-
 
 createCategoryDropDown = function(categories){
     if (categories.length == 0)
