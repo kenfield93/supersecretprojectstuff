@@ -4,37 +4,17 @@
 </head>
 <body>
 
-<p style="text-align: left"> Welcome {{ userName }}! </p>
+<p > Welcome {{ userName }}! </p>
 <br><br>
-
+<a href="home"> Home </a>
 <br><br>
 <div>
-    <form method="get">
-        <p> Order By</p>
-        <select name="order">
-            <option value="alphabetic">Alphabetic </option>
-            <option value="top">Top K</option>
-        </select>
-        <p> User Filter</p>
-        <select name="rows" >
-            <option value="customer">Customers</option>
-            <option value="state">States</option>
-        </select>
-        <p> Product Filter</p>
-        <select name="cols" >
-            <option value="-1">All Categories</option>
-            {{{categoryDropDown}}
-        </select>
-        <br>
-        <button name="displayAnal" value="true" type="submit">run query</button>
-    </form>
+    <table border="1">
+        {{{ table }}}
+    </table>
 
 </div>
 <br>
-<div>
-    <table border="1">
-        {{{chart}}
-    </table>
-</div>
+
 </body>
 </html>

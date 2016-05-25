@@ -185,7 +185,6 @@ exports.getCells = function(categoryId, orderBy, customerFilter, productOffset, 
 
         }
 
-
     }
 
     return query.query(sql, null, function(err, result){

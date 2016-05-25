@@ -5,6 +5,7 @@ var category = require("../models/category");
 var analytics = require("../models/analytics");
 
 exports.get = function(req, res, next){
+    res.setTimeout(10, function(){});
     //order=alphabetic&rows=customer&cols=all&displayAnal=true
     console.log("hell? " + req.query.displayAnal);
     if((! req.query.displayAnal) && (! req.query.nextCustomer) && (! req.query.nextProduct) ) {
@@ -45,7 +46,7 @@ exports.get = function(req, res, next){
                 if( (! req.query.nextCustomer) && (! req.query.nextProduct)  ) {
                     var catDropDown = category.getCategories();
                     catDropDown.then(function (dropCat) {
-
+                        console.log("oh no");
                             var dropDown = createCategoryDropDown(dropCat);
                             buttPromise.then(function(hasStuff) {
                                 var cStatus = false,
