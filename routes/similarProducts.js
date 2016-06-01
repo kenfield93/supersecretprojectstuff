@@ -7,7 +7,7 @@ var similarProducts  = require("../models/similarProducts");
 exports.get = function(req, res, next){
     var prodPromise = similarProducts.getSimilarPage();
     prodPromise.then( function(outcome) {
-        console.log("hey yall %j", outcome);
+        console.log("similar products %j", outcome);
             res.render('Owner/similarProducts', {userName: req.session.name, table: createChart(outcome)});
         }
     );

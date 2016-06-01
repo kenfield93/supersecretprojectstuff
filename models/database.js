@@ -6,7 +6,7 @@
      */
 var pg = require('pg');
 /* REQUIRES A POSTGRES DB CALLED 'project1' */
-var connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/project1';
+var connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/project2';
 
 // THESE COMMENTS ARE WHAT CREATED THE TABLES, I HAD TO COMMENT OUT OR ELSE THEY GET CALLED
 // EVERY TIME YOU START UP THE SERVER. PROBABLY NEED TO FIGURE OUT A CLEANER WAY TO DO THIS
@@ -99,8 +99,8 @@ pg.connect(connectionString, function(err, client, done){
 
     done();
 });
-*/
 
+*/
 
 /* Basic Interface for talking to the db via pg module. Returns a promise with the outcome
 *  of w/e callback function you pass in.

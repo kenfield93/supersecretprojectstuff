@@ -7,7 +7,6 @@ var analytics = require("../models/analytics");
 exports.get = function(req, res, next){
     res.setTimeout(10, function(){});
     //order=alphabetic&rows=customer&cols=all&displayAnal=true
-    console.log("hell? " + req.query.displayAnal);
     if((! req.query.displayAnal) && (! req.query.nextCustomer) && (! req.query.nextProduct) ) {
         req.session.productOffset = 0;
         req.session.customerOffset = 0;
@@ -33,14 +32,13 @@ exports.get = function(req, res, next){
 
         /* testing similarProd */
 
-    console.log("por que");
         var buttPromise = analytics.displayNextButtons(sortProducts, sortUsers );
 
         /*  done testing similarProd               */
         var columnPromise = analytics.getColumns(sortProducts, orderBy, req.session.productOffset);
         var cellPromise = analytics.getCells(sortProducts, orderBy, sortUsers, req.session.productOffset, req.session.customerOffset);
         columnPromise.then( function(cols) {
-     //       console.log(" columns %j", cols);
+            console.log(" columns %j", cols);
             cellPromise.then(function(cell){
                 var chart = createChart( cols,  cell);
                 if( (! req.query.nextCustomer) && (! req.query.nextProduct)  ) {
@@ -56,7 +54,6 @@ exports.get = function(req, res, next){
                                 if(  (hasStuff[0].productcount - req.session.productOffset - 20 ) > 0 )
                                     pStatus = true;
 
-                                console.log("cstatus = " + cStatus + " pstatus = " + pStatus + " outcome %j \n", hasStuff);
                                 res.render('Owner/salesAnalytics', {
                                     userName: req.session.name,
                                     categoryDropDown: dropDown,
@@ -130,7 +127,6 @@ function createChart(columnsTitles, cells){
         var currName = "";
         var prevName = "";
         var productMap = {};
-    console.log("yo %j", columnsTitles);
 
        for( i = 0; i < columnsTitles.length; i++){
             html += " <td><b> " + getName(columnsTitles[i]) + " $" + columnsTitles[i].total + " </b></td> ";
@@ -148,15 +144,12 @@ function createChart(columnsTitles, cells){
         rowsObj[getName(cells[i])] = {name: getName(cells[i]), total : cells[i].aggregate };
     }
     var rows = Object.keys(rowsObj).map(function(key){ return rowsObj[key]});
-    console.log("leaf %j", rows);
 
     for( i = 0; i < rows.length; i++){
         names[getName(rows[i])] = "<tr> <td> <b> " + getName(rows[i]) + " $ " + rows[i].total + "</b> </td> ";
     }
 
     currName = "";
-    console.log("ello matey %j", cells);
-    console.log("Cells.length = " + cells.length);
     if(rows.length > 0)
         currName = getName(rows[0]);
 
@@ -171,7 +164,6 @@ function createChart(columnsTitles, cells){
         names[currName] += " </tr>";
 
     var array = Object.keys(names).map(function (key) {return names[key]});
-    console.log("bobo ", array.length);
     for( i = 0; i < array.length; i++)
         html += array[i];
 
@@ -192,12 +184,12 @@ createCategoryDropDown = function(categories){
 
 createNextCustomerButton = function(customerTitle, display){
    if (display)
-        return "<button name='nextCustomer' value='true' type='submit'>NEXT 20 " + customerTitle + " </button>";
+        return "<button name='nextCustomer' value='true' type='submit'>NEXT 10 " + customerTitle + " </button>";
     return "";
 }
 
 createNextProductButton = function(display){
     if( display)
-        return "<button name='nextProduct' value='true' type='submit'>Next 10 Products </button>";
+        return "<button name='nextProduct' value='true' type='submit'>Next 20 Products </button>";
     return "";
 }
