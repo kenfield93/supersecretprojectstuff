@@ -10,17 +10,16 @@ exports.get = function(req, res, next){
     if( req.query.test1 ){
 
 
-        //get aggregates of these rows server side and split into the stateRow and productRow
+        // Get aggregates of these rows server side and split into the stateRow and productRow
         // salesLog.initProductLog();
         // salesLog.initStateLog();
+
 
         /*
         var productrow = [{pid: 2, total: 19, category: 1 }];
         var staterow = [{state: 'CA', total: 69, category: 2}];
         salesLog.updateProductRow(productrow);
         salesLog.updateStateRow(staterow);
-
-
         */
     }
     //res.setTimeout(10, function(){});
@@ -41,9 +40,11 @@ exports.get = function(req, res, next){
         var sortUsers = "state"; // rows of chart (by consumers or states)
         var sortProducts = req.query.cols; // columns of chart ( by category, either all cats, or a specific one)
 
-        /* testing similarProd */
+        /* Testing insertOrders */
+        console.log("Calling insertOrders");
+        salesLog.insertOrders(15, 5);
+        /*  Done testing insertOrders */
 
-        /*  done testing similarProd               */
         var columnPromise = analytics.getColumns(sortProducts, 0);
         var cellPromise = analytics.getCells(sortProducts , sortUsers, 0,0);
         columnPromise.then( function(cols) {

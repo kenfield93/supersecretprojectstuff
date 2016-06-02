@@ -111,22 +111,19 @@ pg.connect(connectionString, function(err, client, done){
 
     done();
 });
-/*
-
-
+*/
 
 /*
 pg.connect(connectionString, function(err, client, done){
-    var createUsers = client.query(users);
-    var createCategory = client.query(categories);
-    var createProduct  = client.query(product_items);
-    var createOrders   = client.query(orders);
-  //  var createSalesRecords = client.query(sales_records);
-  //  var createProductSold = client.query(product_sold);
+    // var createUsers = client.query(users);
+    // var createCategory = client.query(categories);
+    // var createProduct  = client.query(product_items);
+    // var createOrders   = client.query(orders);
+    // var createSalesRecords = client.query(sales_records);
+    // var createProductSold = client.query(product_sold);
 
     done();
 });
-
 */
 
 

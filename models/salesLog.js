@@ -18,7 +18,7 @@ exports.insertOrders = function(queries, newEntries){
     });
 
     sql =
-    " SELECT proc_insert_orders(30, 10); ";
+    " SELECT proc_insert_orders(" + queries + ", " + newEntries + "); ";
     console.log("Hello world.");
 
 
@@ -62,7 +62,7 @@ exports.insertOrders = function(queries, newEntries){
 exports.flushLogs = function(){
 
    var sql = " UPDATE statelog SET totalspent = 0; UPDATE productlog SET totalspent = 0; ";
-    query.query(sql, null, function(err, result){ return true;});
+    query.query(sql, null, function(err, result){return true;});
 
 };
 
@@ -109,7 +109,7 @@ exports.initProductLog = function(){
         return result.rows;
     });
 
-    p.then( function(outcome){
+    p.then(function(outcome){
         promiseList = [];
         console.log("outcome = %j " , outcome);
         var pid, category;
