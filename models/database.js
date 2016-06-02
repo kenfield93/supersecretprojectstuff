@@ -90,6 +90,8 @@ var orders = " CREATE TABLE orders ( " +
     ;
 
 */
+
+/*
  var stateLog = " CREATE TABLE stateLog ( " +
      " state char(2) NOT NULL, " +
      " totalSpent INTEGER , " +
@@ -110,6 +112,10 @@ pg.connect(connectionString, function(err, client, done){
     done();
 });
 /*
+
+
+
+/*
 pg.connect(connectionString, function(err, client, done){
     var createUsers = client.query(users);
     var createCategory = client.query(categories);
@@ -124,7 +130,7 @@ pg.connect(connectionString, function(err, client, done){
 */
 
 
-
+/*
 /* Basic Interface for talking to the db via pg module. Returns a promise with the outcome
 *  of w/e callback function you pass in.
 *  */

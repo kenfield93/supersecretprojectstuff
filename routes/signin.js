@@ -22,6 +22,8 @@ exports.post = function(req, res, next) {
             req.session.isOwner = value["isOwner"];
             req.session.loggedIn = true;
             req.session.name = userName;
+            // what state the user is in so i don't have to to a sql to find out later for log / precompute
+            req.session.userState = value["userState"];
             if( value["isOwner"] )
                 res.render('Owner/home', {userName: userName});
             else

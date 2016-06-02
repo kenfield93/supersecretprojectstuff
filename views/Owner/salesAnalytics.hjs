@@ -24,10 +24,12 @@
      <div style = "{{displayFilters}}">
         <button name="displayAnal" value="true" type="submit">run query</button>
      </div>
-
+     <button name="insert" value="true" type="submit"> insert </button>
+     <button name="test1" value="true" type="submit"> test init state </button>
  </form>
 
 </div>
+
 <br>
 <div>
     <table border="1">

@@ -51,20 +51,18 @@ exports.createUser = function(userName, age, isOwner, state){
 // returns a promise w/ false if user doesn't exist and n_id and b_isOwner
 exports.getSigninInfo = function(userName){
     userName = userName.trim().toLowerCase();
-    var sql = ' SELECT users.id, users.owner ' +
+    var sql = ' SELECT users.id, users.owner, users.state ' +
         ' FROM users' +
         ' WHERE users.name = \''+ userName + '\'';
 
     var dbPromise = query.query(sql, null, function(err, result){
-        //console.log("Session: %j", result);
         if(err) {
             return null;
         }
         // user has account
         if(result.rowCount != 0){
 
-
-            return { id : result.rows[0].id, isOwner: result.rows[0].owner};
+            return { id : result.rows[0].id, isOwner: result.rows[0].owner, userState: result.rows[0].state};
         }
         // else user name isn't in db so no account exists for it
         return false;

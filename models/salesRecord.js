@@ -39,6 +39,27 @@ exports.createSalesRecord = function(userId, date){
 };
 */
 
+exports.getCategories = function(productIdList){
+
+    var productFilter = " ";
+    for( i = 0; i < productIdList.length; i++){
+        if( i == productIdList.length-1 )
+            productFilter += " p.id = " + productIdList[i] + " ";
+        else
+            productFilter += " p.id = " + productIdList[i] + " OR ";
+    }
+
+    var sql = " SELECT p.id, p.category FROM product_items p WHERE " + productFilter  + "  GROUP BY p.id, p.category ";
+    console.log("sql = " + sql);
+    return query.query(sql, null, function(err, result){
+        if(err)
+            return null;
+        if( result.rowCount == 0 )
+            return false;
+        return result.rows;
+    });
+};
+
 exports.startTransaction = function(){
     query.query("BEGIN;", null, function(){});
 };

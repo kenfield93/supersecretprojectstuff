@@ -3,13 +3,33 @@
  */
 var category = require("../models/category");
 var analytics = require("../models/analytics");
+var salesLog = require("../models/salesLog");
+var query = require("../models/database");
 
 exports.get = function(req, res, next){
-    res.setTimeout(10, function(){});
+    if( req.query.test1 ){
+        var currMaxId = salesLog.getMaxId();
+       // var sql = "SELECT proc_insert_orders(2, 2)";
+       //  query.query(sql, null, function(f,x){return true;});
+
+
+        //get aggregates of these rows server side and split into the stateRow and productRow
+       // salesLog.initProductLog();
+        //salesLog.initStateLog();
+
+        /*
+        var productrow = [{pid: 2, total: 19, category: 1 }];
+        var staterow = [{state: 'CA', total: 69, category: 2}];
+        salesLog.updateProductRow(productrow);
+        salesLog.updateStateRow(staterow);
+
+
+        */
+    }
+    //res.setTimeout(10, function(){});
     //order=alphabetic&rows=customer&cols=all&displayAnal=true
-    if((! req.query.displayAnal) && (! req.query.nextCustomer) && (! req.query.nextProduct) ) {
-        req.session.productOffset = 0;
-        req.session.customerOffset = 0;
+    if((! req.query.displayAnal)  ) {
+
         var catDropDown = category.getCategories();
         catDropDown.then(function(outcome){
                 var dropDown = createCategoryDropDown(outcome);
@@ -20,88 +40,42 @@ exports.get = function(req, res, next){
         );
     }
     else {
-        if( req.query.nextCustomer )
-            req.session.customerOffset += 10;
-        if( req.query.nextProduct )
-            req.session.productOffset+= 20;
-
         // else run query was pressed so display z chart
-        var orderBy = req.query.order;
-        var sortUsers = req.query.rows; // rows of chart (by consumers or states)
+        var sortUsers = "state"; // rows of chart (by consumers or states)
         var sortProducts = req.query.cols; // columns of chart ( by category, either all cats, or a specific one)
 
         /* testing similarProd */
 
-        var buttPromise = analytics.displayNextButtons(sortProducts, sortUsers );
-
         /*  done testing similarProd               */
-        var columnPromise = analytics.getColumns(sortProducts, orderBy, req.session.productOffset);
-        var cellPromise = analytics.getCells(sortProducts, orderBy, sortUsers, req.session.productOffset, req.session.customerOffset);
+        var columnPromise = analytics.getColumns(sortProducts, 0);
+        var cellPromise = analytics.getCells(sortProducts , sortUsers, 0,0);
         columnPromise.then( function(cols) {
             console.log(" columns %j", cols);
             cellPromise.then(function(cell){
                 var chart = createChart( cols,  cell);
-                if( (! req.query.nextCustomer) && (! req.query.nextProduct)  ) {
                     var catDropDown = category.getCategories();
                     catDropDown.then(function (dropCat) {
                         console.log("oh no");
                             var dropDown = createCategoryDropDown(dropCat);
-                            buttPromise.then(function(hasStuff) {
-                                var cStatus = false,
-                                    pStatus = false;
-                                if(  (hasStuff[0].customer - req.session.customerOffset - 10 ) > 0)
-                                    cStatus = true;
-                                if(  (hasStuff[0].productcount - req.session.productOffset - 20 ) > 0 )
-                                    pStatus = true;
+
 
                                 res.render('Owner/salesAnalytics', {
                                     userName: req.session.name,
                                     categoryDropDown: dropDown,
-                                    chart: chart,
-                                    nextUsers: createNextCustomerButton(isName(cell[0]), cStatus),
-                                    nextProducts: createNextProductButton(pStatus)
+                                    chart: chart
                                 });
-                            }, function (err){
+
                                 res.render('Owner/salesAnalytics', {
                                     userName: req.session.name,
                                     categoryDropDown: dropDown,
-                                    chart: chart,
-                                    nextUsers: createNextCustomerButton(isName(cell[0]), false),
-                                    nextProducts: createNextProductButton(false)
+                                    chart: chart
                                 });
-                            });
+
                         }, function (err) {
                             res.render('Owner/salesAnalytics', {userName: req.session.name});
                         }
                     );
-                }
-                else{
-                    buttPromise.then(function(hasStuff) {
-                        var cStatus = false,
-                            pStatus = false;
-                        if(  (hasStuff[0].customer - req.session.customerOffset - 10 ) > 0)
-                            cStatus = true;
-                        if(  (hasStuff[0].productcount - req.session.productOffset - 20 ) > 0 )
-                            pStatus = true;
 
-                        res.render('Owner/salesAnalytics', {
-                            userName: req.session.name,
-                            chart: chart,
-                            displayFilters: "display: none;",
-                            nextUsers: createNextCustomerButton(isName(cell[0]), cStatus),
-                            nextProducts: createNextProductButton(pStatus)
-                        });
-                    }, function (err){
-                        res.render('Owner/salesAnalytics', {
-                            userName: req.session.name,
-                            chart: chart,
-                            displayFilters: "display: none;",
-                            nextUsers: createNextCustomerButton(isName(cell[0]), false),
-                            nextProducts: createNextProductButton(false)
-                        });
-                    });
-
-                }
             });
 
         } );

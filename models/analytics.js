@@ -4,7 +4,7 @@
 
 var query = require("./database.js");
 
- exports.getColumns = function ( categoryId, orderBy, productOffset){
+ exports.getColumns = function ( categoryId,  productOffset){
      var categoryStmt = "";
      var categoryTopK = "";
      var customerSelection = "";
@@ -38,7 +38,7 @@ var query = require("./database.js");
  };
 
 
-exports.getCells = function(categoryId, orderBy, customerFilter, productOffset, customerOffset){
+exports.getCells = function(categoryId,  customerFilter, productOffset, customerOffset){
     var categoryStmt = "";
     var categoryTopK = "";
     var customerSelection = "";
