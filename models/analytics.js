@@ -15,23 +15,7 @@ var query = require("./database.js");
      }
 
      var sql = "";
-     if( orderBy == "alphabetic") {
 
-         sql += "WITH topProducts AS " +
-             "(SELECT p.id, p.name " +
-             " FROM product_items p " + categoryStmt +
-             " GROUP BY p.id, p.name " +
-             " ORDER BY p.name " +
-             " LIMIT 20 OFFSET " + productOffset + " ) " +
-
-             " SELECT topProducts.name , coalesce(SUM(o.price * o.quantity), 0) AS total " +
-             " FROM topProducts LEFT JOIN orders o " +
-             " ON topProducts.id = o.product_id " +
-             " GROUP BY topProducts.name" +
-             " ORDER BY topProducts.name; "
-         ;
-     }
-     else{
          sql += " WITH categoryProducts AS " +
              " (SELECT p.id, p.name FROM product_items p " + categoryStmt + " )" +
 
@@ -42,7 +26,7 @@ var query = require("./database.js");
              " ORDER BY x.total DESC LIMIT 20 OFFSET " + productOffset
          ;
 
-     }
+
 
      return query.query(sql, null, function(err, result){
          if(err)
@@ -71,61 +55,7 @@ exports.getCells = function(categoryId, orderBy, customerFilter, productOffset, 
     }
 
     var sql = "";
-    if( orderBy == "alphabetic") {
-     sql = "DROP TABLE IF EXISTS topCustomers ; " +
-          "CREATE TEMP TABLE  topCustomers AS " +
-        " SELECT u.id, u." + customerSelection +
-        " FROM users u " +
-        " ORDER BY u." + customerSelection +
-        " LIMIT 10 OFFSET " + customerOffset + " ;  " +
-            //
 
-         " WITH topProducts AS " +
-         "(SELECT p.id, p.name " +
-         " FROM product_items p " + categoryStmt +
-         " GROUP BY p.id, p.name " +
-         " ORDER BY p.name " +
-         " LIMIT 20 OFFSET " + productOffset + " ) " +
-            // need to filter out products
-
-             //
-         ", categoryProducts AS " +
-         " (SELECT p.id FROM product_items p " + categoryStmt + " )" +
-
-         ", filteredProducts AS " +
-         " (SELECT o.price, o.quantity, o.user_id" +
-         " FROM categoryProducts, orders o" +
-         " WHERE categoryProducts.id = o.product_id " +
-         " )";
-
-
-         if( customerFilter == "customer") {
-             sql += " SELECT rows.name, rows.total, coalesce(SUM(f.price * f.quantity), 0 ) as aggregate " +
-             " FROM  (SELECT rows.userName as name, rows.productName, rows.user, coalesce(SUM(o.price * o.quantity), 0) as total " + //rows.userName AS name, coalesce(SUM(o.price * o.quantity),0)" +
-             " FROM (SELECT u.id as user, p.id as product, u.name as username, p.name as productname FROM topCustomers u , topProducts p " +
-             " ORDER BY u.name, u.id, p.name, p.id ) rows " +
-             " LEFT JOIN orders o ON o.product_id = rows.product AND o.user_id = rows.user " +
-             " GROUP BY rows.userName, rows.user, rows.productName ORDER BY rows.userName, rows.productName ) rows LEFT JOIN filteredProducts f ON rows.user = f.user_id GROUP BY rows.total, rows.user, rows.Name, rows.productName ORDER BY rows.name, rows.productName "
-
-             ;
-         }
-        else{
-
-             sql +=  " SELECT rows.state  , x.total AS aggregate, coalesce(SUM(rows.total), 0) as total  " +
-                 " FROM (SELECT  rows.state, rows.productName, rows.user, coalesce( SUM(o.price * o.quantity),0 ) as total"  +
-
-                 " FROM  (SELECT u.id as user, p.id as product, u.state , p.name as productName FROM topCustomers u , topProducts p " +
-                 " ORDER BY u.state, u.id, p.name, p.id) rows " +
-                 " LEFT JOIN orders o ON o.product_id = rows.product AND o.user_id = rows.user " +
-                 " GROUP BY rows.state, rows.user, rows.productName ORDER BY rows.state, rows.productName) rows " +
-                   //  "  )"
-                     " JOIN   (SELECT state, coalesce(SUM(x.price * x.quantity),0) AS total FROM (SELECT o.user_id, o.price, o.quantity FROM categoryProducts p JOIN orders o ON p.id = o.product_id ) x RIGHT JOIN topCustomers u ON u.id = x.user_id  GROUP BY u.state)  x" +
-                 " ON x.state = rows.state GROUP BY rows.state, rows.productName, x.total ORDER BY rows.state, rows.productName "
-
-        ;
-         }
-    }
-    else{
         sql = " WITH categoryProducts AS " +
                  " (SELECT p.id, p.name FROM product_items p " + categoryStmt + " )" +
 
@@ -152,20 +82,8 @@ exports.getCells = function(categoryId, orderBy, customerFilter, productOffset, 
 
         ;
 
-        if( customerFilter == "customer") {
 
-            sql += " SELECT  rows.name, rows.total, coalesce(SUM(f.price * f.quantity), 0 ) as aggregate" +
-                " FROM (SELECT rows.rowOrdering, rows.userName as name, rows.productName, rows.user, coalesce(SUM(o.price * o.quantity),0) as total " +
-                     " FROM  ( SELECT c.name AS userName , p.name AS productName , p.total AS rowOrdering, p.id AS product, c.id AS user  " +
-                         " FROM topProducts p , topCustomers c  GROUP BY c.name, p.total, p.name, p.id, c.id ORDER BY c.name, p.total DESC ) rows " +
 
-                    " LEFT JOIN orders o ON o.product_id = rows.product AND o.user_id = rows.user " +
-                    " GROUP BY rows.userName, rows.rowOrdering, rows.productName, rows.user ORDER BY rows.userName, rows.rowOrdering DESC ) rows " +
-                " LEFT JOIN filteredProducts f ON rows.user = f.user_id GROUP BY rows.total, rows.user, rows.Name, rows.productName, rows.rowOrdering  ORDER BY coalesce(SUM(f.price * f.quantity), 0 ) DESC, rows.name, rows.rowOrdering DESC  "
-            ;
-
-        }
-        else{
           //  sql += "SELECT state, coalesce(SUM(x.price * x.quantity), 0) as total FROM ( SELECT o.user_id, o.price, o.quantity FROM categoryProducts p LEFT JOIN orders o ON p.id = o.product_id ) x RIGHT JOIN topCustomers u ON u.id = x.user_id GROUP BY u.state "
 
             sql +=
@@ -183,9 +101,9 @@ exports.getCells = function(categoryId, orderBy, customerFilter, productOffset, 
 
             ;
 
-        }
 
-    }
+
+
 
     return query.query(sql, null, function(err, result){
         if(err)
@@ -197,7 +115,7 @@ exports.getCells = function(categoryId, orderBy, customerFilter, productOffset, 
 };
 
 
-
+/*
 exports.displayNextButtons = function(categoryId, customerType){
     var categoryStmt = "";
     var customerSelection;
@@ -224,3 +142,4 @@ exports.displayNextButtons = function(categoryId, customerType){
 };
 
 
+*/
