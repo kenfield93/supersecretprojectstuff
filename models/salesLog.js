@@ -4,9 +4,59 @@
 
 var query = require("./database.js");
 
+exports.insertOrders = function(queries, newEntries){
 
-exports.getOrderUpdates = function(){
+    sql =
+    " SELECT MAX(id) " +
+    " FROM orders; "
+    ;
 
+    var maxIdPromise = query.query(sql, null, function(err, result){
+        if(err)
+            return null;
+        return result.rows;
+    });
+
+    sql =
+    " SELECT proc_insert_orders(30, 10); ";
+    console.log("Hello world.");
+
+
+    maxIdPromise.then(function(lastOrder){
+            console.log("lastOrder = %j", lastOrder);
+            var t = query.query(sql, null, function(err, result){
+                if(err)
+                    return null;
+                if(result.rowCount == 0)
+                    return false;
+                return result.rows;
+            });
+            t.then(function(x){});
+            
+            sql =
+            " WITH recentOrders AS " +
+            " (SELECT orders.id AS oid, user_id AS uid, state, product_id AS pid, price AS totalSpent " +
+            " FROM orders " +
+            " INNER JOIN users " +
+            " ON user_id = users.id " +
+            " WHERE orders.id > " + lastOrder + ") " +
+
+            " SELECT oid, state, totalSpent, pid, category " +
+            " FROM recentOrders " +
+            " INNER JOIN product_items " +
+            " ON recentOrders.pid = product_items.id " +
+            " ORDER BY oid; "
+            ;
+
+            return query.query(sql, null, function(err, result){
+                if(err)
+                    return null;
+                if(result.rowCount == 0)
+                    return false;
+                return result.rows;
+            });
+        }
+    );
 };
 
 exports.flushLogs = function(){

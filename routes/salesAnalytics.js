@@ -8,14 +8,11 @@ var query = require("../models/database");
 
 exports.get = function(req, res, next){
     if( req.query.test1 ){
-        var currMaxId = salesLog.getMaxId();
-       // var sql = "SELECT proc_insert_orders(2, 2)";
-       //  query.query(sql, null, function(f,x){return true;});
 
 
         //get aggregates of these rows server side and split into the stateRow and productRow
-       // salesLog.initProductLog();
-        //salesLog.initStateLog();
+        // salesLog.initProductLog();
+        // salesLog.initStateLog();
 
         /*
         var productrow = [{pid: 2, total: 19, category: 1 }];

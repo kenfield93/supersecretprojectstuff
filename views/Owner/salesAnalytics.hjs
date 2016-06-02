@@ -16,7 +16,7 @@
      <p> Product Filter</p>
      <select name="cols" >
          <option value="-1">All Categories</option>
-         {{{categoryDropDown}}
+         {{{categoryDropDown}}}
      </select>
      </div>
 
