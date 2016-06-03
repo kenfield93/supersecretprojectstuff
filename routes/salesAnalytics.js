@@ -24,7 +24,7 @@ exports.get = function(req, res, next){
     }
     //res.setTimeout(10, function(){});
     //order=alphabetic&rows=customer&cols=all&displayAnal=true
-    if((! req.query.displayAnal)  ) {
+    if(!req.query.displayAnal) {
 
         var catDropDown = category.getCategories();
         catDropDown.then(function(outcome){
@@ -41,8 +41,17 @@ exports.get = function(req, res, next){
         var sortProducts = req.query.cols; // columns of chart ( by category, either all cats, or a specific one)
 
         /* Testing insertOrders */
-        console.log("Calling insertOrders");
-        salesLog.insertOrders(15, 5);
+        var lastOrder = salesLog.getLastOrder();
+        console.log(lastOrder);
+        // console.log("Calling insertOrders");
+        // var views = salesLog.insertOrders(25, 5);
+
+
+
+
+        //console.log("views = %j", views);
+        //salesLog.updateStateRow(views.rows);
+        //salesLog.updateProductRow(views.rows);
         /*  Done testing insertOrders */
 
         var columnPromise = analytics.getColumns(sortProducts, 0);
