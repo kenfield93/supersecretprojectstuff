@@ -30,7 +30,7 @@ var checkOut = require('./checkOut');
 var analytics = require('./salesAnalytics');
 var similarProducts = require('./similarProducts');
 
-var cse141 = require('./141problem');
+//var cse141 = require('./141problem');
 /* GET home page. */
 
 router.get('/', landing.get );
@@ -58,7 +58,7 @@ router.get('/salesAnalytics', analytics.get);
 router.get('/similarProducts', similarProducts.get);
 //router.get('products/?categoryId=(*)',landing.get );
 
-router.get('/cse141', cse141.get);
+//router.get('/cse141', cse141.get);
 
 module.exports = router;
 
