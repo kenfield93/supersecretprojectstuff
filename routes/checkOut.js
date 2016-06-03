@@ -97,9 +97,11 @@ exports.post = function(req, res, next){
         console.log("stateTotal %j", stateTotal);
         console.log("productTotal %j", productTotal);
         var stateRows = [];
+        console.log("outcome %j", outcome);
         for(i = 0; i < outcome.length; i++){
             stateRows.push({state: req.session.userState , total: stateTotal['' + outcome[i].category], category: outcome[i].category});
         }
+        stateRows.push({state: req.session.userState, total: stateTotal['-1'], category: "-1" });
         console.log("stateRows = %j", stateRows);
         salesLog.updateStateRow(stateRows);
 
@@ -128,7 +130,7 @@ exports.post = function(req, res, next){
     });
 
 
-
+    req.session.shoppingCart = null;
 
     res.render('Customer/checkOutStatus', {userName: req.session.name, status : "Purchase Successful!"});
 };

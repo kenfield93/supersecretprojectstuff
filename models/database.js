@@ -104,15 +104,28 @@ var orders = " CREATE TABLE orders ( " +
          " category INTEGER ) "
      ;
 
+ var stateTotal = " CREATE TABLE stateTotal ( " +
+ " state char(2) NOT NULL, " +
+ " totalSpent INTEGER , " +
+ " category INTEGER ) "
+ ;
+
+ var productTotal = " CREATE TABLE productTotal ( " +
+ " product  INTEGER, " +
+ " totalSpent INTEGER, " +
+ " category INTEGER ) "
+ ;
+
 pg.connect(connectionString, function(err, client, done){
 
-   client.query(stateLog);
-    client.query(productLog);
-
+  // client.query(stateLog);
+   // client.query(productLog);
+    client.query(stateTotal);
+    client.query(productTotal);
     done();
 });
-/*
 
+*/
 
 
 /*

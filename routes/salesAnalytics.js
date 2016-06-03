@@ -4,11 +4,17 @@
 var category = require("../models/category");
 var analytics = require("../models/analytics");
 var salesLog = require("../models/salesLog");
+var precomp = require("../models/precomputation");
 var query = require("../models/database");
 
 exports.get = function(req, res, next){
     if( req.query.test1 ){
-        var currMaxId = salesLog.getMaxId();
+    //precomp.initProductLog();
+      //  precomp.initStatePrecomp();
+        precomp.mergeStateLog();
+        precomp.mergeProductLog();
+
+
        // var sql = "SELECT proc_insert_orders(2, 2)";
        //  query.query(sql, null, function(f,x){return true;});
 
@@ -25,6 +31,7 @@ exports.get = function(req, res, next){
 
 
         */
+        salesLog.flushLogs();
     }
     //res.setTimeout(10, function(){});
     //order=alphabetic&rows=customer&cols=all&displayAnal=true
@@ -52,6 +59,8 @@ exports.get = function(req, res, next){
         columnPromise.then( function(cols) {
             console.log(" columns %j", cols);
             cellPromise.then(function(cell){
+                console.log("fuck cell %j", cell);
+                console.log("fuck me " + cell.length);
                 var chart = createChart( cols,  cell);
                     var catDropDown = category.getCategories();
                     catDropDown.then(function (dropCat) {
@@ -93,7 +102,39 @@ function getName(obj){
     return obj.state;
 }
 
+function createChart(columnsTitles, cells){
+    var html = "<tr> ";
+    html += "<td> XXXX </td>";
+    var currName = "";
+    var prevName = "";
+    var productMap = {};
 
+    for( i = 0; i < columnsTitles.length; i++){
+        html += " <td><b> " + getName(columnsTitles[i]) + " $" + columnsTitles[i].total + " </b></td> ";
+        //   html += " <td><b></b>";
+        productMap[getName(columnsTitles[i])] = getName(columnsTitles[i]);
+
+    }
+    html += " </tr>";
+
+    var names = {};
+    var rowsObj = {};
+
+    currName = "n/a";
+
+    for(i = 0; i < cells.length; i++){
+        if(cells[i].state != currName){
+            if( i != 0)
+                html += "</tr>";
+            html += "<tr> <td> <b> " + cells[i].state + " $" + cells[i].statetotal +" </b></td>";
+            currName = cells[i].state;
+        }
+    }
+    html += "</tr>";
+
+    return html;
+}
+/*
 function createChart(columnsTitles, cells){
 
     var html = "<tr> ";
@@ -143,7 +184,7 @@ function createChart(columnsTitles, cells){
 
     return html;
 }
-
+*/
 createCategoryDropDown = function(categories){
     if (categories.length == 0)
         return "";
