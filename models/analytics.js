@@ -108,7 +108,7 @@ exports.getCells = function(categoryId,  customerFilter, productOffset, customer
            // ", userCells AS  ( SELECT  *  FROM cells, users u WHERE u.state = cells.state ) " +
      //   sql += " SELECT c.state, coalesce(u.cellValue,0) as cellvalue FROM cells c LEFT JOIN userOrders u ON c.state = u.state AND c.product = u.product ORDER BY c.stateTotal DESC"
    // sql += " SELECT * from cells c order by c.stateTotal DESC";
-    sql += " SELECT c.state, c.product, c.stateTotal, coalesce(fuck.cellvalue,0) AS cellvalue FROM cells c LEFT JOIN ( SELECT * from userOrders u order by u.cellvalue ) fuck ON fuck.state = c.state AND fuck.product = c.product ORDER BY c.stateTotal DESC, c.productTotal DESC";
+    sql += " SELECT c.state, c.product, c.stateTotal, coalesce(fuck.cellvalue,0) AS cellvalue FROM cells c LEFT JOIN ( SELECT * from userOrders u order by u.cellvalue ) fuck ON fuck.state = c.state AND fuck.product = c.product ORDER BY c.stateTotal DESC, c.state, c.productTotal DESC";
 
 /*
             if( categoryId >= 0)

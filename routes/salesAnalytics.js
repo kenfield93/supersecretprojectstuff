@@ -14,7 +14,7 @@ exports.get = function(req, res, next){
         precomp.mergeStateLog();
         precomp.mergeProductLog();
 
-
+        salesLog.
        // var sql = "SELECT proc_insert_orders(2, 2)";
        //  query.query(sql, null, function(f,x){return true;});
 
@@ -101,7 +101,7 @@ function getName(obj){
       return obj.name;
     return obj.state;
 }
-
+/*
 function createChart(columnsTitles, cells){
     var html = "<tr> ";
     html += "<td> XXXX </td>";
@@ -134,7 +134,7 @@ function createChart(columnsTitles, cells){
 
     return html;
 }
-/*
+*/
 function createChart(columnsTitles, cells){
 
     var html = "<tr> ";
@@ -156,7 +156,7 @@ function createChart(columnsTitles, cells){
     var rowsObj = {};
 
     for(i = 0; i < cells.length; i++) {
-        rowsObj[getName(cells[i])] = {name: getName(cells[i]), total : cells[i].aggregate };
+        rowsObj[getName(cells[i])] = {name: getName(cells[i]), total : cells[i].statetotal };
     }
     var rows = Object.keys(rowsObj).map(function(key){ return rowsObj[key]});
 
@@ -173,7 +173,7 @@ function createChart(columnsTitles, cells){
                 names[currName] += " </tr>";
                 currName = getName(cells[i]);
             }
-            names[getName(cells[i])] += " <td> $" + cells[i].total + " </td>";
+            names[getName(cells[i])] += " <td> $" + cells[i].cellvalue + " </td>";
     }
     if( rows.length > 0)
         names[currName] += " </tr>";
@@ -184,7 +184,7 @@ function createChart(columnsTitles, cells){
 
     return html;
 }
-*/
+
 createCategoryDropDown = function(categories){
     if (categories.length == 0)
         return "";

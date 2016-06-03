@@ -22,7 +22,7 @@ exports.insertOrders = function(queries, newEntries){
     console.log("Hello world.");
 
 
-    maxIdPromise.then(function(lastOrder){
+    return maxIdPromise.then(function(lastOrder){
             console.log("lastOrder = %j", lastOrder);
             var t = query.query(sql, null, function(err, result){
                 if(err)
